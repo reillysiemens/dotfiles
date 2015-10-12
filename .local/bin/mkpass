@@ -1,0 +1,12 @@
+#!/usr/bin/env zsh
+
+# Rules for generating passwords
+readonly MIN_PASSWORD_LENGTH=$1
+readonly NUM_PASSWORDS=$2
+readonly MODE="SNLC" # Must contain symbol, numeral, lower case, and capital.
+
+# Generate a set of new passwords according to the rules above.
+# Print and spell the generated passwords.
+# Use parameter substitution if NUM_PASSWORDS is not set.
+# http://www.tldp.org/LDP/abs/html/parameter-substitution.html
+apg -l -t -n ${NUM_PASSWORDS:-10} -m ${MIN_PASSWORD_LENGTH:-12} -M $MODE

@@ -1,0 +1,13 @@
+#!/bin/sh
+
+readonly MINECRAFT_PATH="${HOME}/Games/minecraft"
+readonly GAME="${MINECRAFT_PATH}/Minecraft.jar"
+
+readonly LOG_PREFIX=$(date +"%Y-%m-%d.%H:%M:%S")
+readonly LOG_OUTPUT="${MINECRAFT_PATH}/logs/${LOG_PREFIX}.out"
+readonly LOG_ERROR="${MINECRAFT_PATH}/logs/error/${LOG_PREFIX}.err"
+
+readonly INITIAL_RAM="1024M"
+readonly MAX_RAM="2048M"
+
+nohup java -Xmx${MAX_RAM} -Xms${INITIAL_RAM} -jar $GAME > $LOG_OUTPUT 2> $LOG_ERROR &

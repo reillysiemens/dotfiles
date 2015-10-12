@@ -1,0 +1,53 @@
+###############################################################################
+#           _  _                       __  _        
+#     __ _ (_)| |_  ___  ___   _ __   / _|(_)  __ _ 
+#    / _` || || __|/ __|/ _ \ | '_ \ | |_ | | / _` |
+#  _| (_| || || |_| (__| (_) || | | ||  _|| || (_| |
+# (_)\__, ||_| \__|\___|\___/ |_| |_||_|  |_| \__, |
+#    |___/                                    |___/ 
+# 
+###############################################################################
+[user]
+    name = Reilly Tucker Siemens
+    email = reilly.siemens@gmail.com
+    signingkey = 7CB154A9
+[alias]
+    # pretty branch graphing http://stackoverflow.com/a/9074343
+    lg1 = log --graph --abbrev-commit --decorate --date=relative --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset) %G?' --all
+    lg2 = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset) %G?' --all
+    lg = !"git lg1"
+    # alias suggestions from http://gitimmersion.com/
+    type = cat-file -t
+    dump = cat-file -p
+    co = checkout
+    cs = commit -S
+    cm = commit
+    st = status -sb
+    stall = !"git st -uall"
+    br = branch
+    # alias suggestions from https://github.com/tiimgreen/github-cheat-sheet#git-configurations
+    tags = tag -l
+    branches = branch -a
+    remotes = remote -v
+    # alias suggestions from Geoff Shannon (RadicalZephyr)
+    last = log -n1
+    diffb4 = diff HEAD~ HEAD
+    ignore = !echo >> .gitignore
+    pack = !git archive -o $(basename $(pwd))-$(git tag | sort -rV | head -n1).zip HEAD
+    # other aliases
+    nuke = reset --hard HEAD
+    wc = whatchanged -p --oneline
+[core]
+    editor = vim
+    autocrlf = input
+    safecrlf = true
+    excludesfile = ~/.nunathat
+[color]
+    ui = auto
+    diff = auto
+    status = auto
+    branch = auto
+[push]
+    default = simple
+[credential]
+    helper = cache --timeout=3600
