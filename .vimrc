@@ -51,6 +51,7 @@ Plugin 'klen/python-mode'
 
 " rust plugins
 Plugin 'rust-lang/rust.vim'
+Plugin 'cespare/vim-toml'
 
 " file browser
 Plugin 'scrooloose/nerdtree'
