@@ -1,4 +1,4 @@
-#!/usr/bin/env zsh
+#!/usr/bin/env bash
 
 # Rules for generating passwords
 readonly MIN_PASSWORD_LENGTH=$1

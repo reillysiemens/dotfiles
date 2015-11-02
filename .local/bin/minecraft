@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 
 readonly MINECRAFT_PATH="${HOME}/Games/minecraft"
 readonly GAME="${MINECRAFT_PATH}/Minecraft.jar"
