@@ -43,11 +43,18 @@ source $HOME/.secrets
 # }}}
 # Language-Specific Configuration {{{
 
-# load NVM
+# load nvm
 source ~/.nvm/nvm.sh
+
+# load rbenv
+export PATH="$HOME/.rbenv/bin:$PATH"
+eval "$(rbenv init -)"
 
 # make Rust rusty
 export LD_LIBRARY_PATH="/usr/local/lib"
+
+# use binaries installed with cargo
+export PATH="$HOME/.multirust/toolchains/stable/cargo/bin:$PATH"
 
 # make virtualenvwrapper work
 export VIRTUALENVWRAPPER_PYTHON="/usr/bin/python3"
