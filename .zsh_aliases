@@ -37,3 +37,6 @@ alias which='command -v'
 
 # gpg is gpg2
 alias gpg='gpg2'
+
+# because life is short
+alias roulette='for i in {0..5}; do echo -e "import random as rand; import webbrowser as wb; import string as s; import urllib.request as req\ntry:\n\tu = \"https://bit.ly/%s\" % \"\".join(rand.choice(s.ascii_letters+s.digits) for _ in range(0, 6))\n\tr = req.urlopen(u)\n\tprint(\"BANG!\")\n\twb.open(u)\nexcept:\n\tprint(\"click\")" | python3; done'
