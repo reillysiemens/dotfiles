@@ -27,6 +27,9 @@ Plugin 'tpope/vim-fugitive'
 " colorschemes
 Plugin 'morhetz/gruvbox'
 
+" editorconfig
+Plugin 'editorconfig/editorconfig-vim'
+
 " syntax highlighting extras for c, bison, and flex
 Plugin 'justinmk/vim-syntax-extra'
 
@@ -131,6 +134,11 @@ let g:gruvbox_contrast_dark = "soft"
 au BufRead,BufNewFile *.md set filetype=markdown
 
 " }}}
+" EditorConfig {{{
+
+let g:EditorConfig_exclude_patterns = ['fugitive://.*']
+
+" }}}
 " Iced CoffeeScript {{{
 
 " syntax highlighting for IcedCoffeeScript
@@ -151,8 +159,11 @@ au BufRead,BufNewFile *.cson set ft=coffee
 autocmd vimenter * if !argc() | NERDTree | endif
 
 " exit Vim if a NERDTree is the last buffer
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
+" }}}
+" Jinja {{{
+au BufNewFile,BufRead *.jinja2 set ft=jinja
 " }}}
 " Python Mode {{{
 
