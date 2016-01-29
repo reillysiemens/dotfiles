@@ -75,6 +75,7 @@ filetype plugin indent on    " required by vundle
 " }}}
 " Misc {{{
 
+set encoding=utf-8
 set ttyfast " faster redraw
 
 " }}}
