@@ -50,6 +50,9 @@ source ~/.nvm/nvm.sh
 export PATH="$HOME/.rbenv/bin:$PATH"
 eval "$(rbenv init -)"
 
+# make Go go
+export PATH="$PATH:/usr/local/go/bin"
+
 # make Rust rusty
 export LD_LIBRARY_PATH="/usr/local/lib"
 
@@ -57,7 +60,7 @@ export LD_LIBRARY_PATH="/usr/local/lib"
 export PATH="$HOME/.multirust/toolchains/stable/cargo/bin:$PATH"
 
 # make virtualenvwrapper work
-export VIRTUALENVWRAPPER_PYTHON="/usr/bin/python3"
+export VIRTUALENVWRAPPER_PYTHON="$(which python3)"
 export WORKON_HOME="$HOME/.virtualenvs"
 source /usr/bin/virtualenvwrapper.sh
 
