@@ -37,3 +37,7 @@ alias which='command -v'
 
 # gpg is gpg2
 alias gpg='gpg2'
+
+# who wants to highlight, right-click, and copy all the time?
+alias setclip='xclip -selection c'
+alias getclip='xclip -selection c -o'
