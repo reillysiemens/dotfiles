@@ -56,6 +56,9 @@ Plugin 'klen/python-mode'
 Plugin 'rust-lang/rust.vim'
 Plugin 'cespare/vim-toml'
 
+" go plugins
+Plugin 'fatih/vim-go'
+
 " file browser
 Plugin 'scrooloose/nerdtree'
 

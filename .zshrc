@@ -51,7 +51,9 @@ export PATH="$HOME/.rbenv/bin:$PATH"
 eval "$(rbenv init -)"
 
 # make Go go
-export PATH="$PATH:/usr/local/go/bin"
+export GOROOT="$HOME/.local/go"
+export GOPATH="$HOME/Projects/go"
+export PATH="$PATH:$GOROOT/bin:$GOPATH/bin"
 
 # make Rust rusty
 export LD_LIBRARY_PATH="/usr/local/lib"
