@@ -13,6 +13,9 @@ ZSH=$HOME/.oh-my-zsh
 # source aliases from ~/.zsh_aliases
 source ~/.zsh_aliases
 
+# source functions from ~/.zsh_functions
+source ~/.zsh_functions
+
 # use sane history stamps
 HIST_STAMPS="yyyy-mm-dd"
 
