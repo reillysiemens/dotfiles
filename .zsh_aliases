@@ -20,9 +20,6 @@ alias tns='tmux new-session -s'
 alias tls='tmux list-sessions'
 alias tma='tmux attach-session -t'
 
-# launch Gnome Calculator from command line
-alias calc='gnome-calculator'
-
 # alias IPython 3 to not use a banner on launch
 alias ipython3='ipython3 --no-banner'
 
