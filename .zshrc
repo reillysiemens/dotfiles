@@ -59,10 +59,7 @@ export GOPATH="$HOME/Projects/go"
 export PATH="$PATH:$GOROOT/bin:$GOPATH/bin"
 
 # make Rust rusty
-export LD_LIBRARY_PATH="/usr/local/lib"
-
-# use binaries installed with cargo
-export PATH="$HOME/.multirust/toolchains/stable/cargo/bin:$PATH"
+source "$HOME/.cargo/env"
 
 # make virtualenvwrapper work
 export VIRTUALENVWRAPPER_PYTHON="$(which python3)"
