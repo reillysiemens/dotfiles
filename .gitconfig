@@ -7,10 +7,16 @@
 #    |___/                                    |___/ 
 # 
 ###############################################################################
+# user {{{
+
 [user]
     name = Reilly Tucker Siemens
-    email = reilly.siemens@gmail.com
+    email = reilly@tuckersiemens.com
     signingkey = 7CB154A9
+
+# }}}
+# alias {{{
+
 [alias]
     # pretty branch graphing http://stackoverflow.com/a/9074343
     lg1 = log --graph --abbrev-commit --decorate --date=relative --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset) %G?' --all
@@ -37,19 +43,42 @@
     # other aliases
     nuke = reset --hard HEAD
     wc = whatchanged -p --oneline
+
+# }}}
+# core {{{
+
 [core]
     editor = vim
     autocrlf = input
     safecrlf = true
     excludesfile = ~/.nunathat
+
+# }}}
+# color {{{
+
 [color]
     ui = auto
     diff = auto
     status = auto
     branch = auto
+
+# }}}
+# push {{{
+
 [push]
     default = simple
+
+# }}}
+# credential {{{
 [credential]
     helper = cache --timeout=3600
+
+# }}}
+# remote "origin" {{{
+
 [remote "origin"]
 	prune = true
+
+# }}}
+
+# vim:foldmethod=marker:foldlevel=0
