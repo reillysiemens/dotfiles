@@ -43,6 +43,8 @@
     # other aliases
     nuke = reset --hard HEAD
     wc = whatchanged -p --oneline
+    # ASCII art from http://ascii.co.uk/art/jellyfish
+    jellyfish = !"printf \" .-;\\':\\':\\'-.\n{\\'.\\'.\\'.\\'.\\'.}\n )        \\'\\`.\n\\'-. ._ ,_.-=\\'\n  \\`). ( \\`);(\n  (\\'. .)(,\\'.)\n   ) ( ,\\').(\n  ( .\\').\\'(\\').\n  .) (\\' ).(\\'\n   \\'  ) (  ).\n    .\\'( .)\\'\n      .).\n\""
 
 # }}}
 # core {{{
