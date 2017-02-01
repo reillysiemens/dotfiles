@@ -50,7 +50,7 @@ Plugin 'briancollins/vim-jst'
 " python plugins
 Plugin 'lepture/vim-jinja'
 Plugin 'davidhalter/jedi-vim'
-Plugin 'klen/python-mode'
+Plugin 'python-mode/python-mode'
 
 " rust plugins
 Plugin 'rust-lang/rust.vim'
@@ -67,6 +67,8 @@ Plugin 'kien/ctrlp.vim'
 
 " surround all the things
 Plugin 'tpope/vim-surround'
+
+Plugin 'tpope/vim-liquid'
 
 " }}}
 " Vundle Postamble {{{
