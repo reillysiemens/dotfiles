@@ -84,3 +84,5 @@
 # }}}
 
 # vim:foldmethod=marker:foldlevel=0
+[gpg]
+	program = gpg2
