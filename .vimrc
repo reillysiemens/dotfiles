@@ -84,6 +84,12 @@ set encoding=utf-8
 set ttyfast " faster redraw
 
 " }}}
+" Meta {{{
+" http://stackoverflow.com/a/15317146
+set backupdir=~/.vim/backup//
+set directory=~/.vim/swap//
+set undodir=~/.vim/undo//
+" }}}
 " Spaces & Tabs {{{
 
 set tabstop=4 " number of visual spaces per tab
