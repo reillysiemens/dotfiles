@@ -36,19 +36,8 @@ Plugin 'morhetz/gruvbox'
 " syntax highlighting extras for c, bison, and flex
 Plugin 'justinmk/vim-syntax-extra'
 
-" javascript/coffeescript plugins
+" javascript plugins
 Plugin 'jelera/vim-javascript-syntax'
-
-" coffeescript plugins
-Plugin 'kchmck/vim-coffee-script'
-Plugin 'mintplant/vim-literate-coffeescript'
-
-" webdev plugins
-Plugin 'digitaltoad/vim-jade'
-Plugin 'groenewege/vim-less'
-Plugin 'wavded/vim-stylus'
-Plugin 'mustache/vim-mustache-handlebars'
-Plugin 'briancollins/vim-jst'
 
 " python plugins
 Plugin 'lepture/vim-jinja'
