@@ -27,6 +27,9 @@ Plugin 'tpope/vim-fugitive'
 " handy bracket mappings
 Plugin 'tpope/vim-unimpaired'
 
+" surround all the things
+Plugin 'tpope/vim-surround'
+
 " colorschemes
 Plugin 'morhetz/gruvbox'
 
@@ -67,9 +70,6 @@ Plugin 'scrooloose/nerdtree'
 
 " fuzzy matching for filenames and other things
 Plugin 'kien/ctrlp.vim'
-
-" surround all the things
-Plugin 'tpope/vim-surround'
 
 " }}}
 " Vundle Postamble {{{
