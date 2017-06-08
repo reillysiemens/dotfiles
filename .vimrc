@@ -71,8 +71,6 @@ Plugin 'kien/ctrlp.vim'
 " surround all the things
 Plugin 'tpope/vim-surround'
 
-Plugin 'tpope/vim-liquid'
-
 " }}}
 " Vundle Postamble {{{
 
