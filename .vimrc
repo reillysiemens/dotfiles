@@ -24,6 +24,9 @@ Plugin 'gmarik/Vundle.vim'
 " git wrapper for vim
 Plugin 'tpope/vim-fugitive'
 
+" handy bracket mappings
+Plugin 'tpope/vim-unimpaired'
+
 " colorschemes
 Plugin 'morhetz/gruvbox'
 
