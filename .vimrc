@@ -21,6 +21,15 @@ call vundle#begin()
 " required by vundle to manage vundle
 Plugin 'gmarik/Vundle.vim'
 
+" colorschemes
+Plugin 'morhetz/gruvbox'
+
+" fuzzy matching for filenames and other things
+Plugin 'kien/ctrlp.vim'
+
+" file browser
+Plugin 'scrooloose/nerdtree'
+
 " git wrapper for vim
 Plugin 'tpope/vim-fugitive'
 
@@ -29,9 +38,6 @@ Plugin 'tpope/vim-unimpaired'
 
 " surround all the things
 Plugin 'tpope/vim-surround'
-
-" colorschemes
-Plugin 'morhetz/gruvbox'
 
 " syntax highlighting extras for c, bison, and flex
 Plugin 'justinmk/vim-syntax-extra'
@@ -50,12 +56,6 @@ Plugin 'cespare/vim-toml'
 
 " go plugins
 Plugin 'fatih/vim-go'
-
-" file browser
-Plugin 'scrooloose/nerdtree'
-
-" fuzzy matching for filenames and other things
-Plugin 'kien/ctrlp.vim'
 
 " }}}
 " Vundle Postamble {{{
