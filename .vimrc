@@ -33,9 +33,6 @@ Plugin 'tpope/vim-surround'
 " colorschemes
 Plugin 'morhetz/gruvbox'
 
-" editorconfig
-Plugin 'editorconfig/editorconfig-vim'
-
 " syntax highlighting extras for c, bison, and flex
 Plugin 'justinmk/vim-syntax-extra'
 
