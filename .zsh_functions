@@ -18,3 +18,30 @@ function shrinkwrap() {
         printf "shrinkwrap: error: yo, I can't shrinkwrap ${dir}\n"
     fi
 }
+
+function alarm() {
+    local duration repeat sound_file
+    readonly duration="${1:=10}"
+    readonly repeat="${2:=2}"
+    readonly sound_file="${3:="/usr/share/sounds/speech-dispatcher/canary-long.wav"}"
+
+    # Make sure we have aplay.
+    if [[ -z "$(command -v aplay)" ]]; then
+        printf "aplay is required to play .wav files\n"
+        return 1
+    fi
+
+    # Make sure the $sound_file exists.
+    if [[ ! -e $sound_file ]]; then
+        printf "${sound_file}: No such file or directory\n"
+        return 1
+    fi
+
+    sleep $duration
+
+    # ALARM!
+    for r in {1..$repeat}
+    do
+        aplay $sound_file 2&>/dev/null
+    done
+}
