@@ -101,6 +101,7 @@ nnoremap <leader>ev :vsp $MYVIMRC<CR>
 nnoremap <leader>ez :vsp ~/.zshrc<CR>
 nnoremap <leader>sv :source $MYVIMRC<CR>
 nnoremap <leader><space> :nohlsearch<CR>
+nnoremap <leader>t :NERDTreeToggle<CR>
 
 " }}}
 " Folding {{{
