@@ -1,8 +1,0 @@
-default_context:
-    full_name: "Reilly Tucker Siemens"
-    email: "reilly.siemens@gmail.com"
-    github_username: "reillysiemens"
-cookiecutters_dir: "/home/tucker/.config/cookiecutter/cookiecutters/"
-replay_dir: "/home/tucker/.config/cookiecutter/replay-dir/"
-abbreviations:
-    cmd: "/home/tucker/.config/cookiecutter/cookiecutters/cookiecutter-cmd"
