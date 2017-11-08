@@ -1,0 +1,16 @@
+-- https://sqlite.org/cli.html#special_commands_to_sqlite3_dot_commands_
+
+-- Output formatting & useful info.
+.headers on
+.mode column
+.changes on
+.timer on
+
+-- First prompt is MAIN, then CONTINUE.
+-- Neither prompt can exceed 20 characters.
+.prompt "\033[36msql\033[33m>\033[0m " "\033[33m ...\033[0m "
+
+-- https://sqlite.org/different.html
+.print "\033[35mMay you do good and not evil.\033[0m"
+.print "\033[35mMay you find forgiveness for yourself and forgive others.\033[0m"
+.print "\033[35mMay you share freely, never taking more than you give.\033[0m"
