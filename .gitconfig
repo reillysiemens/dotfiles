@@ -39,7 +39,7 @@
     last = log -n1
     diffb4 = diff HEAD~ HEAD
     ignore = !echo >> .gitignore
-    pack = !git archive -o $(basename $(pwd))-$(git tag | sort -rV | head -n1).zip HEAD
+    pack = !git archive --format=tar --prefix=$(basename $(pwd))/ $(git describe --tags $(git rev-list --tags --max-count=1)) | gzip > $(basename $(pwd))-$(git describe --tags $(git rev-list --tags --max-count=1)).tar.gz
     # other aliases
     nuke = reset --hard HEAD
     wc = whatchanged -p --oneline
