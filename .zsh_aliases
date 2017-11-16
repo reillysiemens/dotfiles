@@ -23,9 +23,6 @@ alias tma='tmux attach-session -t'
 # alias IPython 3 to not use a banner on launch
 alias ipython3='ipython3 --no-banner'
 
-# use python3 for pip
-alias pip3='python3 -m pip'
-
 # use color and ANSI line graphics for tree
 alias tree='tree -AC' 
 
