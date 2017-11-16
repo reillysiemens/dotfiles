@@ -20,8 +20,8 @@ alias tns='tmux new-session -s'
 alias tls='tmux list-sessions'
 alias tma='tmux attach-session -t'
 
-# alias IPython 3 to not use a banner on launch
-alias ipython3='ipython3 --no-banner'
+# alias IPython to not use a banner on launch
+alias ipython='ipython --no-banner'
 
 # use color and ANSI line graphics for tree
 alias tree='tree -AC' 
