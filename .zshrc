@@ -46,10 +46,6 @@ source $HOME/.secrets
 # }}}
 # Language-Specific Configuration {{{
 
-# load rbenv
-export PATH="$HOME/.rbenv/bin:$PATH"
-eval "$(rbenv init -)"
-
 # make Go go
 export GOROOT="$HOME/.local/go"
 export GOPATH="$HOME/Projects/go"
