@@ -120,6 +120,9 @@ set incsearch " search as characters are entered
 set hlsearch " highlight matches
 set showmatch " highlight matching [{()}]
 
+" search from visual selection
+vnoremap // y/<C-R>"<CR>
+
 " }}}
 " Colors {{{
 
