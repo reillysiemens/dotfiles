@@ -25,7 +25,7 @@ Plugin 'gmarik/Vundle.vim'
 Plugin 'morhetz/gruvbox'
 
 " fuzzy matching for filenames and other things
-Plugin 'kien/ctrlp.vim'
+Plugin 'ctrlpvim/ctrlp.vim'
 
 " file browser
 Plugin 'scrooloose/nerdtree'
