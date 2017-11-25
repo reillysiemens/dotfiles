@@ -35,3 +35,6 @@ alias gpg='gpg2'
 # who wants to highlight, right-click, and copy all the time?
 alias setclip='xclip -selection c'
 alias getclip='xclip -selection c -o'
+
+# Maybe I don't always want to run Rust nightly to get clippy warnings...
+alias clippy='rustup run nightly cargo clippy'
