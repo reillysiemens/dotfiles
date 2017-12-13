@@ -82,7 +82,11 @@
 	prune = true
 
 # }}}
+# gpg {{{
 
-# vim:foldmethod=marker:foldlevel=0
 [gpg]
 	program = gpg2
+
+# }}}
+
+# vim:foldmethod=marker:foldlevel=0
