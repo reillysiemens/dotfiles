@@ -81,7 +81,7 @@ set undodir=~/.vim/undo//
 
 set tabstop=4 " number of visual spaces per tab
 set softtabstop=4 " number of spaces in tab when editing
-set shiftwidth=4
+set shiftwidth=4 " number of spaces used in indenting
 set expandtab " tabs are spaces
 
 " }}}
