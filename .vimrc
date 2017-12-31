@@ -141,11 +141,6 @@ let g:gruvbox_contrast_dark = "soft"
 au BufRead,BufNewFile *.md set filetype=markdown
 
 " }}}
-" EditorConfig {{{
-
-let g:EditorConfig_exclude_patterns = ['fugitive://.*']
-
-" }}}
 " NERDTree {{{
 
 " start with NERDTree open if no files are specified
