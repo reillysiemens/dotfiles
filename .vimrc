@@ -146,20 +146,6 @@ au BufRead,BufNewFile *.md set filetype=markdown
 let g:EditorConfig_exclude_patterns = ['fugitive://.*']
 
 " }}}
-" Iced CoffeeScript {{{
-
-" syntax highlighting for IcedCoffeeScript
-" taken from suggestion at https://github.com/kchmck/vim-coffee-script/issues/73
-autocmd BufNewFile,BufRead *.iced set filetype=coffee
-syn match coffeeKeyword /\<\%(await\|defer\)\>/ display
-
-" }}}
-" CSON {{{
-
-" syntax highlighting for CSON (https://github.com/bevry/cson)
-au BufRead,BufNewFile *.cson set ft=coffee
-
-" }}}
 " NERDTree {{{
 
 " start with NERDTree open if no files are specified
