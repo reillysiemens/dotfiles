@@ -70,9 +70,6 @@ bindkey '^Xe' edit-command-line
 # make gruvbox look pretty in vim
 source "$HOME/.vim/bundle/gruvbox/gruvbox_256palette.sh"
 
-# change the default cookiecutter config location
-export COOKIECUTTER_CONFIG="$HOME/.config/cookiecutter/cookiecutter.yml"
-
 # }}}
 
 # vim:foldmethod=marker:foldlevel=0
