@@ -64,10 +64,15 @@
 # }}}
 # color {{{
 
-[color]
-    ui = auto
-    status = auto
-    branch = auto
+[color "status"]
+    added = green
+    changed = red
+    untracked = cyan
+
+[color "branch"]
+    current = green
+    local = yellow
+    remote = red
 
 [color "diff-highlight"]
     oldNormal = red
