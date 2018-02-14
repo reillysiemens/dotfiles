@@ -1,0 +1,15 @@
+#!/bin/sh
+
+if [ "$#" -lt "1" ]; then
+  printf "Error in $0\nUsage: $0 GIT_REMOTE_URL\n"
+  exit 1
+fi
+
+remote="$1"
+
+function to_https() {
+  # Convert "git@github.com:user/repo" to "https://github.com/user/repo"
+  printf "$1" | sed 's/git\@/https:\/\//; s/\.com\:/\.com\//; s/\.git//;'
+}
+
+xdg-open "$(to_https $remote)"

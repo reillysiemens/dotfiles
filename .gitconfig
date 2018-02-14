@@ -40,6 +40,8 @@
     diffb4 = diff HEAD~ HEAD
     ignore = !echo >> .gitignore
     pack = !git archive --format=tar --prefix=$(basename $(pwd))/ $(git describe --tags $(git rev-list --tags --max-count=1)) | gzip > $(basename $(pwd))-$(git describe --tags $(git rev-list --tags --max-count=1)).tar.gz
+    # alias suggestion from @kyle-rader (https://git.io/vAsga)
+    web = !"f() {\nif [ -z $1 ];\nthen remote='origin';\nelse remote=$1;\nfi\ngit-open-web $(git remote get-url $remote)\n}\nf"
     # other aliases
     nuke = reset --hard HEAD
     wc = whatchanged -p --oneline
