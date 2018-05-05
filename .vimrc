@@ -102,6 +102,7 @@ nnoremap <leader>ez :vsp ~/.zshrc<CR>
 nnoremap <leader>sv :source $MYVIMRC<CR>
 nnoremap <leader><space> :nohlsearch<CR>
 nnoremap <leader>t :NERDTreeToggle<CR>
+nnoremap <leader>f :NERDTreeFind<CR>
 
 " Thanks, nXqd: https://superuser.com/a/437744
 nnoremap <leader>p :setlocal paste! paste?<CR>
