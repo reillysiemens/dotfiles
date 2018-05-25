@@ -38,3 +38,6 @@ alias getclip='xclip -selection c -o'
 
 # Maybe I don't always want to run Rust nightly to get clippy warnings...
 alias clippy='rustup run nightly cargo clippy'
+
+# I don't generally have a need for openvt.
+alias open='xdg-open'
