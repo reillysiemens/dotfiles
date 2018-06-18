@@ -9,4 +9,4 @@ readonly MODE="SNLC" # Must contain symbol, numeral, lower case, and capital.
 # Print and spell the generated passwords.
 # Use parameter substitution if NUM_PASSWORDS is not set.
 # http://www.tldp.org/LDP/abs/html/parameter-substitution.html
-apg -l -t -n ${NUM_PASSWORDS:-10} -m ${MIN_PASSWORD_LENGTH:-12} -M $MODE
+apg -l -t -n ${NUM_PASSWORDS:-10} -m ${MIN_PASSWORD_LENGTH:-15} -M $MODE
