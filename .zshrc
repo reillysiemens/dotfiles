@@ -57,7 +57,7 @@ source "$HOME/.cargo/env"
 # make virtualenvwrapper work
 export VIRTUALENVWRAPPER_PYTHON="$(which python3)"
 export WORKON_HOME="$HOME/.virtualenvs"
-source /usr/local/bin/virtualenvwrapper.sh
+source $(which virtualenvwrapper.sh)
 
 # }}}
 # Misc {{{
