@@ -41,3 +41,6 @@ alias clippy='rustup run nightly cargo clippy'
 
 # I don't generally have a need for openvt.
 alias open='xdg-open'
+
+# TODO: Remove when https://github.com/rust-lang/rust/issues/45728 is resolved.
+alias cargo="TERM=xterm cargo"
