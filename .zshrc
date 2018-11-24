@@ -26,10 +26,15 @@ source $ZSH/oh-my-zsh.sh
 # don't AUTO_CD, 'cuz it's lame
 unsetopt AUTO_CD
 
-# prompt configuration mostly borrowed from oh-my-zsh geoffgarside theme
-PROMPT='[%*] %{$fg[cyan]%}%n@%m%{$reset_color%}:%{$fg[green]%}%~%{$reset_color%}$(git_prompt_info) %(!.#.$) '
-ZSH_THEME_GIT_PROMPT_PREFIX=" %{$fg[yellow]%}git:("
-ZSH_THEME_GIT_PROMPT_SUFFIX=")%{$reset_color%}"
+# }}}
+# Prompt {{{
+
+# define prompt expansions
+PROMPT='[%*] %F{cyan}%n@%m%f:%F{green}%~%f$(git_prompt_info) § '
+NORMAL_PROMPT="${PROMPT}"
+VI_PROMPT=${PROMPT/'§ '/'%{%F{125}%}¶%f '}
+ZSH_THEME_GIT_PROMPT_PREFIX=" %F{yellow}git:("
+ZSH_THEME_GIT_PROMPT_SUFFIX=")%f"
 
 # }}}
 # Environment Variables {{{
@@ -60,12 +65,46 @@ export WORKON_HOME="$HOME/.virtualenvs"
 source $(which virtualenvwrapper.sh)
 
 # }}}
-# Misc {{{
+# Line Editing {{{
 
-# permit command line editing in the default EDITOR
+# An enormous thank you to Doug Black for their excellent vi-mode blog post!
+# https://dougblack.io/words/zsh-vi-mode.html
+
+# use vi-mode for line editing
+bindkey -v
+
+# use ctrl-p and ctrl-n to cycle history
+bindkey '^P' up-history
+bindkey '^N' down-history
+
+# make backspace and ctrl-h work even after returning from command mode
+bindkey '^?' backward-delete-char
+bindkey '^h' backward-delete-char
+
+# use ctrl-w to remove words backwards
+bindkey '^w' backward-kill-word
+
+# use ctrl-r for reverse history search
+bindkey '^r' history-incremental-search-backward
+
+# use ctrl-e to edit the current line in the default $EDITOR
 autoload edit-command-line
 zle -N edit-command-line
-bindkey '^Xe' edit-command-line
+bindkey '^e' edit-command-line
+
+# switch between normal and vi-mode prompt when changing keymaps
+function zle-line-init zle-keymap-select {
+    PROMPT="${${KEYMAP/vicmd/$VI_PROMPT}/(main|viins)/${NORMAL_PROMPT}}"
+    zle reset-prompt
+}
+zle -N zle-line-init
+zle -N zle-keymap-select
+
+# use a mode change delay of 0.1s
+export KEYTIMEOUT=1
+
+# }}}
+# Misc {{{
 
 # make gruvbox look pretty in vim
 source "$HOME/.vim/bundle/gruvbox/gruvbox_256palette.sh"
