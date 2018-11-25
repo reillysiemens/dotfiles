@@ -32,7 +32,7 @@ unsetopt AUTO_CD
 # define prompt expansions
 PROMPT='[%*] %F{cyan}%n@%m%f:%F{green}%~%f$(git_prompt_info) § '
 NORMAL_PROMPT="${PROMPT}"
-VI_PROMPT=${PROMPT/'§ '/'%{%F{125}%}¶%f '}
+VI_PROMPT=${PROMPT/'§'/'%{%F{125}%}§%f'}
 ZSH_THEME_GIT_PROMPT_PREFIX=" %F{yellow}git:("
 ZSH_THEME_GIT_PROMPT_SUFFIX=")%f"
 
