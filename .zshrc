@@ -79,6 +79,15 @@ bindkey -v
 bindkey '^P' up-history
 bindkey '^N' down-history
 
+# use hjkl to navigate tab completion
+bindkey -M menuselect 'h' vi-backward-char
+bindkey -M menuselect 'k' vi-up-line-or-history
+bindkey -M menuselect 'l' vi-forward-char
+bindkey -M menuselect 'j' vi-down-line-or-history
+
+# retain shift-tab as reverse menu completion
+bindkey -M menuselect '^[[Z' reverse-menu-complete
+
 # make backspace and ctrl-h work even after returning from command mode
 bindkey '^?' backward-delete-char
 bindkey '^h' backward-delete-char
