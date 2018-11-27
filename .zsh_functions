@@ -45,3 +45,11 @@ function alarm() {
         aplay $sound_file 2&>/dev/null
     done
 }
+
+
+function venv_info() {
+    if [ -n "${VIRTUAL_ENV}" ]; then
+        local name=$(basename $VIRTUAL_ENV)
+        echo "${ZSH_THEME_VENV_PROMPT_PREFIX}${name}${ZSH_THEME_VENV_PROMPT_SUFFIX}"
+    fi
+}

@@ -30,9 +30,11 @@ unsetopt AUTO_CD
 # Prompt {{{
 
 # define prompt expansions
-PROMPT='[%*] %F{cyan}%n@%m%f:%F{green}%~%f$(git_prompt_info) § '
+PROMPT='[%*]$(venv_info) %F{cyan}%n@%m%f:%F{green}%~%f$(git_prompt_info) § '
 NORMAL_PROMPT="${PROMPT}"
 VI_PROMPT=${PROMPT/'§'/'%{%F{125}%}§%f'}
+ZSH_THEME_VENV_PROMPT_PREFIX=" %F{105}venv:("
+ZSH_THEME_VENV_PROMPT_SUFFIX=")%f"
 ZSH_THEME_GIT_PROMPT_PREFIX=" %F{yellow}git:("
 ZSH_THEME_GIT_PROMPT_SUFFIX=")%f"
 
