@@ -53,3 +53,29 @@ function venv_info() {
         echo "${ZSH_THEME_VENV_PROMPT_PREFIX}${name}${ZSH_THEME_VENV_PROMPT_SUFFIX}"
     fi
 }
+
+function jmp() {
+    local long_url domain shorten_api
+    readonly long_url=${1}
+    readonly domain='j.mp'
+    readonly shorten_api='https://api-ssl.bitly.com/v4/shorten'
+
+    if [ -z "${BITLY_TOKEN}" ]; then
+        echo '$BITLY_TOKEN is unset'; return 1
+    fi
+
+    if [ -z "${long_url}" ]; then
+        echo 'Usage: jmp long_url'; return 1
+    fi
+
+    curl \
+        --fail \
+        --silent \
+        --request POST \
+        --header 'Content-Type: application/json' \
+        --header "Authorization: Bearer ${BITLY_TOKEN}" \
+        --data '{"domain": "'${domain}'", "long_url": "'${long_url}'"}' \
+        $shorten_api |
+        jq -r '.link' |
+        sed 's/http:/https:/'
+}
