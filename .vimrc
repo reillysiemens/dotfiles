@@ -104,6 +104,9 @@ nnoremap <leader><space> :nohlsearch<CR>
 nnoremap <leader>t :NERDTreeToggle<CR>
 nnoremap <leader>f :NERDTreeFind<CR>
 
+" count matches for a pattern under the cursor (https://j.mp/2QSFa8Z)
+nnoremap <leader>* *<C-O>:%s///gn<CR>
+
 " Thanks, nXqd: https://superuser.com/a/437744
 nnoremap <leader>p :setlocal paste! paste?<CR>
 nnoremap <leader>l :setlocal list! list?<CR>
