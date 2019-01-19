@@ -1,0 +1,22 @@
+###############################################################################
+#     _                       _
+#    (_) _ __   _ __   _   _ | |_  _ __  ___
+#    | || '_ \ | '_ \ | | | || __|| '__|/ __|
+#  _ | || | | || |_) || |_| || |_ | |  | (__
+# (_)|_||_| |_|| .__/  \__,_| \__||_|   \___|
+#              |_|
+#
+###############################################################################
+
+# Thanks Unix StackExchange! (https://unix.stackexchange.com/a/104101/82338)
+set editing-mode vi
+$if mode=vi
+
+set keymap vi-command
+# These are for vi-command mode.
+Control-l: clear-screen
+
+set keymap vi-insert
+# These are for vi-insert mode.
+Control-l: clear-screen 
+$endif
