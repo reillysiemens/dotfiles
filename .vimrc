@@ -19,7 +19,7 @@ call vundle#begin()
 " Vundle Plugins {{{
 
 " required by vundle to manage vundle
-Plugin 'gmarik/Vundle.vim'
+Plugin 'VundleVim/Vundle.vim'
 
 " colorschemes
 Plugin 'morhetz/gruvbox'
