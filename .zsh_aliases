@@ -15,6 +15,9 @@ alias mv='mv -v'
 # more is less
 alias more='less'
 
+# view with vim
+alias view='vim -R'
+
 # tmux aliases, 'cuz typing is hard
 alias tns='tmux new-session -s'
 alias tls='tmux list-sessions'
