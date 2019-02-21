@@ -111,6 +111,9 @@ nnoremap <leader>* *<C-O>:%s///gn<CR>
 nnoremap <leader>p :setlocal paste! paste?<CR>
 nnoremap <leader>l :setlocal list! list?<CR>
 
+" Run rustfmt on .rs files. https://vi.stackexchange.com/a/11196
+autocmd FileType rust nnoremap <buffer><silent><leader>r :RustFmt<CR>
+
 " }}}
 " Folding {{{
 
