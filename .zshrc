@@ -66,6 +66,9 @@ export VIRTUALENVWRAPPER_PYTHON="$(which python3)"
 export WORKON_HOME="$HOME/.virtualenvs"
 source $(which virtualenvwrapper.sh)
 
+# make poetry poetic
+export PATH="$HOME/.poetry/bin:$PATH"
+
 # }}}
 # Line Editing {{{
 
