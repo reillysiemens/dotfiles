@@ -69,6 +69,12 @@ source $(which virtualenvwrapper.sh)
 # make poetry poetic
 export PATH="$HOME/.poetry/bin:$PATH"
 
+# make volta electric
+export VOLTA_HOME="$HOME/.volta"
+[ -s "$VOLTA_HOME/load.sh" ] && . "$VOLTA_HOME/load.sh"
+
+export PATH="$VOLTA_HOME/bin:$PATH"
+
 # }}}
 # Line Editing {{{
 
