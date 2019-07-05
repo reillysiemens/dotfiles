@@ -49,6 +49,7 @@ Plugin 'jelera/vim-javascript-syntax'
 Plugin 'lepture/vim-jinja'
 Plugin 'davidhalter/jedi-vim'
 Plugin 'python-mode/python-mode'
+Plugin 'ambv/black'
 
 " rust plugins
 Plugin 'rust-lang/rust.vim'
@@ -202,6 +203,9 @@ let g:pymode_syntax_space_errors = g:pymode_syntax_all
 " don't autofold code
 let g:pymode_folding = 0
 
+" }}}
+" Black {{{
+autocmd BufWritePre *.py execute ':Black'
 " }}}
 
 " vim:foldmethod=marker:foldlevel=0
