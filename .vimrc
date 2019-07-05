@@ -202,6 +202,9 @@ let g:pymode_syntax_space_errors = g:pymode_syntax_all
 "
 " don't autofold code
 let g:pymode_folding = 0
+"
+" prevent auto insertion of autocomplete options
+set completeopt=menuone,noinsert
 
 " }}}
 " Black {{{
