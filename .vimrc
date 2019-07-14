@@ -85,6 +85,11 @@ set softtabstop=4 " number of spaces in tab when editing
 set shiftwidth=4 " number of spaces used in indenting
 set expandtab " tabs are spaces
 
+" overrides for specific filetypes
+autocmd FileType javascript,json set tabstop=2 softtabstop=2 shiftwidth=2
+autocmd FileType css,html set tabstop=2 softtabstop=2 shiftwidth=2
+autocmd FileType c,cpp set tabstop=2 softtabstop=2 shiftwidth=2
+
 " }}}
 " UI & Layout {{{
 
