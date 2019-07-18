@@ -89,6 +89,7 @@ set expandtab " tabs are spaces
 autocmd FileType javascript,json set tabstop=2 softtabstop=2 shiftwidth=2
 autocmd FileType css,html set tabstop=2 softtabstop=2 shiftwidth=2
 autocmd FileType c,cpp set tabstop=2 softtabstop=2 shiftwidth=2
+autocmd FileTYpe yml,yaml set tabstop=2 softtabstop=2 shiftwidth=2
 
 " }}}
 " UI & Layout {{{
