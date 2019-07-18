@@ -26,6 +26,9 @@ alias tma='tmux attach-session -t'
 # launch IPython without a banner and use vi keybindings for editing
 alias ipython='ipython --no-banner --TerminalInteractiveShell.editing_mode=vi'
 
+# Run the latest Python release candidate in a Docker container.
+alias python-rc="docker run --rm -it python:rc-alpine"
+
 # use color and ANSI line graphics for tree
 alias tree='tree -AC' 
 
