@@ -216,5 +216,8 @@ set completeopt=menuone,noinsert
 " Black {{{
 autocmd BufWritePre *.py execute ':Black'
 " }}}
+" Rustfmt {{{
+autocmd BufWritePre *.rs execute ':RustFmt'
+" }}}
 
 " vim:foldmethod=marker:foldlevel=0
