@@ -50,3 +50,6 @@ alias open='xdg-open'
 
 # TODO: Remove when https://github.com/rust-lang/rust/issues/45728 is resolved.
 alias cargo="TERM=xterm cargo"
+
+# play Minecraft!
+alias minecraft="${HOME}/Games/minecraft/client/minecraft-launcher"
