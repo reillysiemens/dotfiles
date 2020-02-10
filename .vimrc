@@ -160,6 +160,9 @@ au BufRead,BufNewFile *.md set filetype=markdown
 " don't show help text at the top of NERDTree
 let NERDTreeMinimalUI=1
 
+" ignore these files in NERDTree
+let NERDTreeIgnore = ['\.pyc$', '\.egg-info$', '__pycache__']
+
 " start with NERDTree open if no files are specified
 autocmd vimenter * if !argc() | NERDTree | endif
 
