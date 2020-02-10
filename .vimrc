@@ -158,7 +158,7 @@ au BufRead,BufNewFile *.md set filetype=markdown
 " NERDTree {{{
 
 " start with NERDTree open if no files are specified
-" autocmd vimenter * if !argc() | NERDTree | endif
+autocmd vimenter * if !argc() | NERDTree | endif
 
 " exit Vim if a NERDTree is the last buffer
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
