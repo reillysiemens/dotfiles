@@ -157,6 +157,9 @@ au BufRead,BufNewFile *.md set filetype=markdown
 " }}}
 " NERDTree {{{
 
+" don't show help text at the top of NERDTree
+let NERDTreeMinimalUI=1
+
 " start with NERDTree open if no files are specified
 autocmd vimenter * if !argc() | NERDTree | endif
 
