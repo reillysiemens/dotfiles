@@ -64,6 +64,12 @@
     diff = diff-highlight | less
 
 # }}}
+# commit {{{
+
+[commit]
+    gpgSign = true
+
+# }}}
 # color {{{
 
 [color "status"]
