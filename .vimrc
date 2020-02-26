@@ -196,6 +196,7 @@ let g:pymode_doc_key = 'K'
 "linting
 let g:pymode_lint = 1
 let g:pymode_lint_checker = "pyflakes,pep8"
+let g:pymode_lint_options_pep8 = {'max_line_length': 88}
 " auto check on save
 let g:pymode_lint_write = 1
 "
