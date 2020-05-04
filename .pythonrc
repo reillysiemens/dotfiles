@@ -1,0 +1,71 @@
+"""
+A custom configuration for interactive Python sessions.
+
+Features:
+- Colored PS1 and PS2 prompts.
+- Persistent readline history.
+- Four spaces instead of tabs.
+- Tab completion in any Python.
+
+Docs:
+- https://tiswww.case.edu/php/chet/readline/readline.html
+- https://docs.python.org/3/using/cmdline.html#envvar-PYTHONSTARTUP
+- https://docs.python.org/3/library/sys.html#sys.ps1
+"""
+import atexit
+import os
+import readline
+import rlcompleter
+import sys
+
+# We need RL_PROMPT_START_IGNORE and RL_PROMPT_END_IGNORE to display correctly.
+sys.ps1 = "\001\033[34m\002>>>\001\033[0m\002 "  # Blue PS1.
+sys.ps2 = "\001\033[35m\002...\001\033[0m\002 "  # Magenta PS2.
+
+# Keep 10,000 lines of history at ~/.python_history.
+history_length = 10000
+history_file = os.path.join(os.environ["HOME"], ".python_history")
+
+# Enable tab completion. This is the default in Python 3.
+init_line = "tab: complete"
+
+# Copy the existing readline completer.
+_default_completer = readline.get_completer()
+
+
+def spaces_for_tabs(text, state):
+    """Insert four spaces instead of tab. Use ctrl+v, tab for real tab."""
+    if text:
+        return _default_completer(text, state)
+    elif state == 0:
+        return "    "
+    else:
+        return 0
+
+
+try:
+    # Read the history file. Don't fail if we can't.
+    readline.read_history_file(history_file)
+except IOError:
+    pass
+
+# Set our readline customizations.
+readline.set_history_length(history_length)
+readline.set_completer(spaces_for_tabs)
+readline.parse_and_bind(init_line)
+
+# Write history when the interpreter exits.
+atexit.register(readline.write_history_file, history_file)
+
+# Clean up all our imports and definitions.
+del (
+    atexit,
+    os,
+    readline,
+    rlcompleter,
+    sys,
+    history_length,
+    history_file,
+    init_line,
+    spaces_for_tabs,
+)
