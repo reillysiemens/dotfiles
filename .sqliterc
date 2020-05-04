@@ -17,7 +17,8 @@
 
 -- First prompt is MAIN, then CONTINUE.
 -- Neither prompt can exceed 20 characters.
-.prompt "\033[36msql\033[33m>\033[0m " "\033[33m ...\033[0m "
+-- \001 and \002 are RL_PROMPT_START_IGNORE and RL_PROMPT_END_IGNORE.
+.prompt "\001\033[36m\002sql>\001\033[0m\002 " "\001\033[33m\002 ...\001\033[0m\002 "
 
 -- https://sqlite.org/different.html
 .print ""
