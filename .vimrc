@@ -58,6 +58,9 @@ Plugin 'cespare/vim-toml'
 " go plugins
 Plugin 'fatih/vim-go'
 
+" saltstack plugins
+Plugin 'saltstack/salt-vim'
+
 " }}}
 " Vundle Postamble {{{
 
