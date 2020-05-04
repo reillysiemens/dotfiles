@@ -61,13 +61,26 @@ export PATH="$PATH:$GOROOT/bin:$GOPATH/bin"
 # make Rust rusty
 source "$HOME/.cargo/env"
 
-# make virtualenvwrapper work
-export VIRTUALENVWRAPPER_PYTHON="$(which python3)"
-export WORKON_HOME="$HOME/.virtualenvs"
-source $(which virtualenvwrapper.sh)
+# use a Python startup file
+export PYTHONSTARTUP="${HOME}/.pythonrc"
 
 # make poetry poetic
 export PATH="$HOME/.poetry/bin:$PATH"
+
+# use pyenv to manage Python installations
+export PYENV_ROOT="${HOME}/.pyenv"
+export PATH="${PYENV_ROOT}/bin:${PATH}"
+
+# enable pyenv shims and autocompletion
+if command -v pyenv 1>/dev/null 2>&1
+then
+    eval "$(pyenv init -)"
+fi
+
+# make virtualenvwrapper work
+export VIRTUALENVWRAPPER_PYTHON="$(pyenv which python3)"
+export WORKON_HOME="$HOME/.virtualenvs"
+source $(pyenv which virtualenvwrapper.sh)
 
 # make volta electric
 export VOLTA_HOME="$HOME/.volta"
