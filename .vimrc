@@ -234,7 +234,6 @@ autocmd BufWritePre *.py execute ':Black'
 " }}}
 " Rustfmt {{{
 autocmd BufWritePre *.rs execute ':RustFmt'
-let g:rustfmt_command = "rustfmt --edition=2018"
 " }}}
 
 " vim:foldmethod=marker:foldlevel=0
