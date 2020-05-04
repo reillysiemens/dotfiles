@@ -49,7 +49,7 @@ Plugin 'jelera/vim-javascript-syntax'
 Plugin 'lepture/vim-jinja'
 Plugin 'davidhalter/jedi-vim'
 Plugin 'python-mode/python-mode'
-Plugin 'ambv/black'
+Plugin 'psf/black'
 
 " rust plugins
 Plugin 'rust-lang/rust.vim'
