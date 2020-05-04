@@ -124,11 +124,5 @@ zle -N zle-keymap-select
 export KEYTIMEOUT=1
 
 # }}}
-# Misc {{{
-
-# make gruvbox look pretty in vim
-source "$HOME/.vim/bundle/gruvbox/gruvbox_256palette.sh"
-
-# }}}
 
 # vim:foldmethod=marker:foldlevel=0
