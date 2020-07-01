@@ -56,45 +56,35 @@
     autocrlf = input
     safecrlf = true
     excludesfile = ~/.nunathat
+    pager = delta
 
 # }}}
-# pager {{{
+# delta {{{
 
-[pager]
-    diff = diff-highlight | less
+[delta]
+    # Requires delta (https://github.com/dandavison/delta).
+    # Style suggestions taken from https://git.io/JJUL1.
+    line-numbers = true
+    syntax-theme = "ansi-dark"
+    zero-style = "auto"
+    minus-style = "red"
+    minus-emph-style = "red reverse"
+    plus-style = "green"
+    plus-emph-style = "green reverse"
+    file-style = "bold yellow"
+    file-decoration-style = "bold yellow box"
+
+# }}}
+# interactive {{{
+
+[interactive]
+    diffFilter = delta --color-only
 
 # }}}
 # commit {{{
 
 [commit]
     gpgSign = true
-
-# }}}
-# color {{{
-
-[color "status"]
-    added = green
-    changed = red
-    untracked = cyan
-
-[color "branch"]
-    current = green
-    local = yellow
-    remote = red
-
-[color "diff-highlight"]
-    oldNormal = red
-    oldHighlight = red 52
-    newNormal = green
-    newHighlight = green 22
-
-[color "diff"]
-    meta = yellow
-    frag = cyan
-    commit = yellow
-    old = red
-    new = green
-    whitespace = red reverse
 
 # }}}
 # push {{{
@@ -104,6 +94,7 @@
 
 # }}}
 # credential {{{
+#
 [credential]
     helper = cache --timeout=3600
 
