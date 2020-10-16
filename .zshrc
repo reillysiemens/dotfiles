@@ -47,6 +47,10 @@ export PATH="/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin:$HOME/
 # set preferred EDITOR to vim
 export EDITOR='vim'
 
+# use bat to color man pages (https://git.io/JTnWJ)
+export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+export MANROFFOPT="-c"
+
 # keep it secret, keep it safe https://j.mp/1Mrj1op
 source $HOME/.secrets
 
