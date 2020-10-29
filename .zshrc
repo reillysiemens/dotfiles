@@ -51,6 +51,9 @@ export EDITOR='vim'
 export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 export MANROFFOPT="-c"
 
+# use gruvbox as the bat theme
+export BAT_THEME='gruvbox'
+
 # keep it secret, keep it safe https://j.mp/1Mrj1op
 source $HOME/.secrets
 
