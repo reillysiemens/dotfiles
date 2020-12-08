@@ -56,6 +56,8 @@
     autocrlf = input
     safecrlf = true
     excludesfile = ~/.nunathat
+    # Thanks to Tekin for the idea. https://j.mp/3gqv6NW
+    attributesfile = ~/.gitattributes
     pager = delta
 
 # }}}
