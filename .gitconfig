@@ -6,6 +6,12 @@
     signingkey = 7CB154A9
 
 # }}}
+# init {{{
+
+[init]
+    templateDir = ~/.local/share/templates/git
+
+# }}}
 # alias {{{
 
 [alias]
