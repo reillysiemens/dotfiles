@@ -64,7 +64,7 @@
     # Requires delta (https://github.com/dandavison/delta).
     # Style suggestions taken from https://git.io/JJUL1.
     line-numbers = true
-    syntax-theme = "ansi-dark"
+    syntax-theme = "gruvbox-dark"
     zero-style = "auto"
     minus-style = "red"
     minus-emph-style = "red reverse"
