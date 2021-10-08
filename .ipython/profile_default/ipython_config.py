@@ -5,6 +5,7 @@ IPython configuration with custom prompt using gruvbox colors.
 Thanks to @petobens for their excellent dotfiles.
 - https://github.com/petobens/dotfiles
 """
+import warnings
 from typing import List, Optional, Tuple
 
 import IPython.terminal.prompts as prompts
@@ -70,3 +71,12 @@ config.TerminalInteractiveShell.highlighting_style_overrides = {
     Token.InsertPromptNum: f"{Color.neutral_purple} bold",
     Token.NavPromptNum: f"{Color.neutral_blue} bold",
 }
+
+# Suppress annoying virtualenv warnings.
+warnings.filterwarnings(
+    "ignore",
+    message=(
+        "Attempting to work in a virtualenv. If you encounter problems, "
+        "please install IPython inside the virtualenv."
+    ),
+)
