@@ -88,6 +88,9 @@ export VOLTA_HOME="$HOME/.volta"
 
 export PATH="$VOLTA_HOME/bin:$PATH"
 
+# keep dotnet in line
+export DOTNET_CLI_TELEMETRY_OPTOUT=1
+
 # }}}
 # Line Editing {{{
 
