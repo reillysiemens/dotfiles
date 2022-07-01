@@ -14,6 +14,10 @@
         "editorBracketHighlight.foreground4": "#98971a",
         "editorBracketHighlight.foreground5": "#d79921",
         "editorBracketHighlight.foreground6": "#d65d0e",
-        "editorBracketHighlight.unexpectedBracket.foreground": "#cc241d"
-    }
+        "editorBracketHighlight.unexpectedBracket.foreground": "#cc241d",
+        "editorRuler.foreground": "#282828"
+    },
+    "editor.rulers": [
+      80
+    ]
 }
