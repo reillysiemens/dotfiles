@@ -19,5 +19,8 @@
     },
     "editor.rulers": [
       80
-    ]
+    ],
+    "extensions.experimental.affinity": {
+      "vscodevim.vim": 1
+    }
 }
