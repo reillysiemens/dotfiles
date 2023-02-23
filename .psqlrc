@@ -10,7 +10,7 @@
 \pset linestyle unicode
 
 -- enable timers
-\timing
+\timing on
 
 -- disable default pager
 \pset pager off
@@ -25,6 +25,12 @@
 -- better errors
 \set VERBOSITY verbose
 
+-- keep history per database
+\set HISTFILE ~/.cache/psql-history- :DBNAME
+
+-- keep infinite history
+\set HISTSIZE -1
+
 -- keep inputs in the history once
 \set HISTCONTROL ignoredups
 
@@ -33,3 +39,6 @@
 
 -- output back on
 \set QUIET off
+
+-- complete keywords to lowercase
+\set COMP_KEYWORD_CASE lower
