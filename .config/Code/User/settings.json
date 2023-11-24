@@ -1,26 +1,31 @@
 {
-    "telemetry.telemetryLevel": "off",
-    "workbench.colorTheme": "Gruvbox Dark (Hard)",
-    "editor.formatOnSave": true,
-    "window.titleBarStyle": "custom",
-    "window.zoomLevel": 1,
-    "editor.inlayHints.enabled": "offUnlessPressed",
-    "keyboard.dispatch": "keyCode",
-    "editor.bracketPairColorization.enabled": true,
-    "workbench.colorCustomizations": {
-        "editorBracketHighlight.foreground1": "#b16286",
-        "editorBracketHighlight.foreground2": "#458588",
-        "editorBracketHighlight.foreground3": "#689d6a",
-        "editorBracketHighlight.foreground4": "#98971a",
-        "editorBracketHighlight.foreground5": "#d79921",
-        "editorBracketHighlight.foreground6": "#d65d0e",
-        "editorBracketHighlight.unexpectedBracket.foreground": "#cc241d",
-        "editorRuler.foreground": "#282828"
-    },
-    "editor.rulers": [
-      80
-    ],
-    "extensions.experimental.affinity": {
-      "vscodevim.vim": 1
-    }
+  "telemetry.telemetryLevel": "off",
+  "workbench.colorTheme": "Gruvbox Dark (Hard)",
+  "editor.formatOnSave": true,
+  "window.zoomLevel": 2,
+  "editor.inlayHints.enabled": "offUnlessPressed",
+  "keyboard.dispatch": "keyCode",
+  "editor.bracketPairColorization.enabled": true,
+  "workbench.colorCustomizations": {
+    "editorBracketHighlight.foreground1": "#b16286",
+    "editorBracketHighlight.foreground2": "#458588",
+    "editorBracketHighlight.foreground3": "#689d6a",
+    "editorBracketHighlight.foreground4": "#98971a",
+    "editorBracketHighlight.foreground5": "#d79921",
+    "editorBracketHighlight.foreground6": "#d65d0e",
+    "editorBracketHighlight.unexpectedBracket.foreground": "#cc241d",
+    "editorRuler.foreground": "#282828"
+  },
+  "editor.rulers": [
+    80
+  ],
+  "editor.fontFamily": "'Monaspace Neon', monospace",
+  "editor.fontLigatures": "'ss01', 'ss02', 'ss03', 'ss04', 'ss05', 'ss06', 'ss07', 'ss08', 'calt', 'dlig'",
+  "extensions.experimental.affinity": {
+    "vscodevim.vim": 1
+  },
+  "rust-analyzer.check.command": "clippy",
+  "settingsSync.keybindingsPerPlatform": false,
+  "window.titleBarStyle": "custom",
+  "window.commandCenter": false
 }
