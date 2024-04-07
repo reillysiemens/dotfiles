@@ -27,5 +27,17 @@
   "rust-analyzer.check.command": "clippy",
   "settingsSync.keybindingsPerPlatform": false,
   "window.titleBarStyle": "custom",
-  "window.commandCenter": false
+  "window.commandCenter": false,
+  "workbench.startupEditor": "none",
+  "window.menuBarVisibility": "compact",
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "vim.leader": "<space>",
+  "vim.normalModeKeyBindings": [
+    {
+        "before": ["<leader>", "p"],
+        "commands": ["workbench.action.quickOpen"]
+    }
+  ]
 }
