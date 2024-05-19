@@ -4,9 +4,7 @@
   "editor.fontLigatures": "'ss01', 'ss02', 'ss03', 'ss04', 'ss05', 'ss06', 'ss07', 'ss08', 'calt', 'dlig'",
   "editor.formatOnSave": true,
   "editor.inlayHints.enabled": "offUnlessPressed",
-  "editor.rulers": [
-    80
-  ],
+  "editor.rulers": [80],
   "extensions.experimental.affinity": {
     "vscodevim.vim": 1
   },
@@ -20,8 +18,16 @@
   "vim.leader": "<space>",
   "vim.normalModeKeyBindings": [
     {
+      "before": ["<leader>", "e"],
+      "commands": ["workbench.view.explorer"]
+    },
+    {
       "before": ["<leader>", "p"],
       "commands": ["workbench.action.quickOpen"]
+    },
+    {
+      "before": ["<leader>", "z"],
+      "commands": ["workbench.action.toggleZenMode"]
     }
   ],
   "window.commandCenter": false,
@@ -39,5 +45,13 @@
     "editorBracketHighlight.unexpectedBracket.foreground": "#cc241d"
   },
   "workbench.colorTheme": "Gruvbox Dark (Hard)",
-  "workbench.startupEditor": "none"
+  "workbench.editor.customLabels.patterns": {
+    "**/mod.rs": "${dirname}/mod.rs"
+  },
+  "workbench.startupEditor": "none",
+  "zenMode.centerLayout": false,
+  "zenMode.hideLineNumbers": false,
+  "workbench.layoutControl.enabled": false,
+  "editor.renderWhitespace": "all",
+  "dotnetAcquisitionExtension.enableTelemetry": false
 }
