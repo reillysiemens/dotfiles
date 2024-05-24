@@ -12,8 +12,10 @@
 .prompt "\001\033[36m\002sql>\001\033[0m\002 " "\001\033[33m\002 ...\001\033[0m\002 "
 
 -- https://sqlite.org/different.html
+.output stderr
 .print ""
 .print "\033[35mMay you do good and not evil.\033[0m"
 .print "\033[35mMay you find forgiveness for yourself and forgive others.\033[0m"
 .print "\033[35mMay you share freely, never taking more than you give.\033[0m"
 .print ""
+.output stdout
