@@ -26,6 +26,10 @@
       "commands": ["workbench.action.quickOpen"]
     },
     {
+      "before": ["<leader>", "t"],
+      "commands": ["workbench.action.terminal.new"]
+    },
+    {
       "before": ["<leader>", "z"],
       "commands": ["workbench.action.toggleZenMode"]
     }
