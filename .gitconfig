@@ -9,7 +9,7 @@
 # init {{{
 
 [init]
-    templateDir = ~/.local/share/templates/git
+    defaultBranch = main
 
 # }}}
 # alias {{{
