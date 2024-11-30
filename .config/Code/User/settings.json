@@ -8,7 +8,11 @@
   "extensions.experimental.affinity": {
     "vscodevim.vim": 1
   },
+  "dotnetAcquisitionExtension.enableTelemetry": false,
   "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "keyboard.dispatch": "keyCode",
@@ -52,10 +56,8 @@
   "workbench.editor.customLabels.patterns": {
     "**/mod.rs": "${dirname}/mod.rs"
   },
+  "workbench.layoutControl.enabled": false,
   "workbench.startupEditor": "none",
   "zenMode.centerLayout": false,
   "zenMode.hideLineNumbers": false,
-  "workbench.layoutControl.enabled": false,
-  "editor.renderWhitespace": "all",
-  "dotnetAcquisitionExtension.enableTelemetry": false
 }
