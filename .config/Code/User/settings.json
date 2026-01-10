@@ -4,7 +4,7 @@
   "editor.fontLigatures": "'calt', 'liga', 'ss01', 'ss02', 'ss03', 'ss04', 'ss05', 'ss06', 'ss07', 'ss08', 'ss09'",
   "editor.formatOnSave": true,
   "editor.inlayHints.enabled": "offUnlessPressed",
-  "editor.rulers": [80],
+  "editor.rulers": [80, 120],
   "extensions.experimental.affinity": {
     "vscodevim.vim": 1
   },
@@ -39,10 +39,13 @@
     }
   ],
   "window.commandCenter": false,
-  "window.menuBarVisibility": "compact",
   "window.titleBarStyle": "custom",
-  "window.zoomLevel": 2,
+  "window.zoomLevel": 1,
+  "workbench.activityBar.location": "top",
   "workbench.colorCustomizations": {
+    // https://benfrain.com/vs-code-highlight-just-the-active-indent-guide/
+    "editorIndentGuide.background1": "#1d202101",
+    "editorIndentGuide.activeBackground1": "#3c3836",
     "editorRuler.foreground": "#282828",
     "editorBracketHighlight.foreground1": "#b16286",
     "editorBracketHighlight.foreground2": "#458588",
@@ -50,14 +53,23 @@
     "editorBracketHighlight.foreground4": "#98971a",
     "editorBracketHighlight.foreground5": "#d79921",
     "editorBracketHighlight.foreground6": "#d65d0e",
-    "editorBracketHighlight.unexpectedBracket.foreground": "#cc241d"
+    "editorBracketHighlight.unexpectedBracket.foreground": "#cc241d",
+    // https://github.com/jdinhify/vscode-theme-gruvbox/issues/139
+    "[Gruvbox Dark Hard]": {
+      "activityBar.border": "default",
+      "scrollbar.shadow": "#00000060"
+    }
   },
-  "workbench.colorTheme": "Gruvbox Dark (Hard)",
   "workbench.editor.customLabels.patterns": {
     "**/mod.rs": "${dirname}/mod.rs"
   },
-  "workbench.layoutControl.enabled": false,
+  "window.customTitleBarVisibility": "windowed",
   "workbench.startupEditor": "none",
   "zenMode.centerLayout": false,
   "zenMode.hideLineNumbers": false,
+  "workbench.colorTheme": "Gruvbox Dark Hard",
+  "window.menuBarVisibility": "compact",
+  "workbench.layoutControl.enabled": false,
+  "github.copilot.nextEditSuggestions.enabled": true,
+  "chat.viewSessions.orientation": "stacked"
 }
