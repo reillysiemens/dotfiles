@@ -1,7 +1,8 @@
 {
   "editor.bracketPairColorization.enabled": true,
   "editor.fontFamily": "'Monaspace Neon', monospace",
-  "editor.fontLigatures": "'calt', 'liga', 'ss01', 'ss02', 'ss03', 'ss04', 'ss05', 'ss06', 'ss07', 'ss08', 'ss09'",
+  "editor.inlineSuggest.fontFamily": "'Monaspace Krypton', monospace",
+  "editor.fontLigatures": "'calt', 'ss01', 'ss02', 'ss03', 'ss04', 'ss05', 'ss06', 'ss07', 'ss08', 'ss09', 'ss10', 'cv31' 1, 'cv32' 1, 'cv62' 1, 'liga'",
   "editor.formatOnSave": true,
   "editor.inlayHints.enabled": "offUnlessPressed",
   "editor.rulers": [80, 120],
