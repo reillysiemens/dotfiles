@@ -1,0 +1,2 @@
+#!/bin/sh
+upower -b | grep percentage | awk '{print $2}'

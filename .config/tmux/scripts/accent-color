@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+#
+# Pick a Gruvbox dark accent color from a hash of the short hostname and
+# apply it to the tmux options that depend on the accent.
+#
+# Exposes the chosen color as the @accent user option so status format
+# strings (status-left, status-right, window-status-format, ...) can
+# reference it via #{@accent}. Style options like pane-active-border-style
+# do not format-expand user variables on render, so this script sets them
+# to the literal colourN value directly.
+#
+# Invoked from ~/.tmux.conf via:
+#     run-shell '~/.config/tmux/accent.sh'
+
+set -euo pipefail
+
+# Gruvbox dark accents as truecolor hex values. Only the bright variants for
+# each hue, giving 7 distinct colors. Requires the terminal to support 24-bit
+# color (declared via "Tc" in terminal-overrides in ~/.tmux.conf).
+readonly COLORS=(
+    fb4934  # bright red
+    b8bb26  # bright green
+    fabd2f  # bright yellow
+    83a598  # bright blue
+    d3869b  # bright purple
+    8ec07c  # bright aqua
+    fe8019  # bright orange
+)
+
+host="$(hostname -s)"
+hash="$(printf '%s' "$host" | cksum | awk '{print $1}')"
+accent="#${COLORS[$((hash % ${#COLORS[@]}))]}"
+
+# Available to status format strings as #{@accent}.
+tmux set-option -gq @accent "$accent"
+
+# Style options need the literal value; format expansion does not apply.
+tmux set-option  -g  pane-active-border-style    "fg=${accent},bg=default"
+tmux set-window-option -g window-status-activity-style "fg=#282828,bg=${accent}"
