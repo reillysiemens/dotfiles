@@ -17,6 +17,10 @@ set -euo pipefail
 # Gruvbox dark accents as truecolor hex values. Only the bright variants for
 # each hue, giving 7 distinct colors. Requires the terminal to support 24-bit
 # color (declared via "Tc" in terminal-overrides in ~/.tmux.conf).
+#
+# Mirrored in ~/.config/tmux/config/theme.conf as $red, $green, ...
+# Bash cannot read tmux variables, so the two palettes are kept in sync by
+# hand. Update both when changing colors.
 readonly COLORS=(
     fb4934  # bright red
     b8bb26  # bright green
