@@ -1,2 +1,0 @@
-#!/bin/sh
-awk '{printf "%.0f%%\n", $1 / n * 100}' n=$(nproc) /proc/loadavg

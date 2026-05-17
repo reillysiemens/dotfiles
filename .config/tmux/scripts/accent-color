@@ -33,7 +33,10 @@ readonly COLORS=(
 
 host="$(hostname -s)"
 hash="$(printf '%s' "$host" | cksum | awk '{print $1}')"
-accent="#${COLORS[$((hash % ${#COLORS[@]}))]}"
+# accent="#${COLORS[$((hash % ${#COLORS[@]}))]}"
+accent="#3c3836"
+# accent="#504945"
+# accent="#a89984"
 
 # Available to status format strings as #{@accent}.
 tmux set-option -gq @accent "$accent"
