@@ -69,3 +69,26 @@ function jmp() {
         jq -r '.link' |
         sed 's/http:/https:/'
 }
+
+function bell() {
+    print -n '\a'
+}
+
+# Ring the terminal bell after any foreground command that took longer
+# than $BELL_AFTER seconds. Lets tmux's monitor-bell flash the window
+# when a long-running command finishes in a background tab.
+zmodload zsh/datetime
+typeset -gF _bell_cmd_start
+: ${BELL_AFTER:=10}
+
+function _bell_preexec() { _bell_cmd_start=$EPOCHREALTIME }
+function _bell_precmd() {
+    (( _bell_cmd_start == 0 )) && return
+    local -F elapsed=$(( EPOCHREALTIME - _bell_cmd_start ))
+    _bell_cmd_start=0
+    (( elapsed > BELL_AFTER )) && print -n '\a'
+}
+
+autoload -Uz add-zsh-hook
+add-zsh-hook preexec _bell_preexec
+add-zsh-hook precmd  _bell_precmd
