@@ -66,7 +66,7 @@ selection=$(
               --delimiter=$'\t' --with-nth=2.. \
               --border rounded --padding 1 \
               "$FZF_COLOR" \
-              --header 'Enter: jump to pane'
+              --header 'Enter: switch pane'
 ) || exit 0
 
 target=${selection%%$'\t'*}

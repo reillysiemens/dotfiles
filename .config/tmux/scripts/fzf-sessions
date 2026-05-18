@@ -57,28 +57,36 @@ confirm() {
     [[ $choice == yes ]]
 }
 
+# Mutation helpers return 0 on a successful side-effect (so the caller
+# can let the popup close naturally) and non-zero on cancel / no-op /
+# failure (so the caller can restart the picker). Errors surfaced via
+# tmux display-message so the user sees what went wrong.
+
 do_new() {
     local name
     name=$(prompt 'New session: ' '' 'Enter to create, Esc to cancel')
-    if [[ -z $name ]]; then restart; fi
-    tmux new-session -d -s "$name"
+    if [[ -z $name ]]; then return 1; fi
+    if ! tmux new-session -d -s "$name" 2>/dev/null; then
+        tmux display-message "session '$name' already exists"
+        return 1
+    fi
     tmux switch-client -t "$name"
 }
 
 do_rename() {
     local cur=$1 name
     name=$(prompt 'Rename to: ' "$cur" 'Enter to rename, Esc to cancel')
-    if [[ -z $name || $name == "$cur" ]]; then restart; fi
-    tmux rename-session -t "$cur" "$name"
-    restart
+    if [[ -z $name || $name == "$cur" ]]; then return 1; fi
+    if ! tmux rename-session -t "$cur" "$name" 2>/dev/null; then
+        tmux display-message "rename to '$name' failed (name in use?)"
+        return 1
+    fi
 }
 
 do_delete() {
     local target=$1
-    if confirm "delete session $target?"; then
-        tmux kill-session -t "$target"
-    fi
-    restart
+    confirm "delete session $target?" || return 1
+    tmux kill-session -t "$target"
 }
 
 # Build the picker rows: every session except the current one, ordered
@@ -102,9 +110,11 @@ done < <(
 )
 
 # If there are no other sessions, jump straight to the new-session
-# flow -- otherwise the picker would just be a blank popup.
+# flow -- otherwise the picker would just be a blank popup. Exit
+# either way: success means switch-client already moved us, cancel
+# means the user changed their mind. Looping back would trap them.
 if (( ${#names[@]} == 0 )); then
-    do_new
+    do_new || true
     exit 0
 fi
 
@@ -130,16 +140,19 @@ out=$(printf '%s' "$rows" \
           --delimiter=$'\t' --with-nth=2.. \
           --border rounded --padding 1 \
           "$FZF_COLOR" \
-          --header 'Enter: switch | Alt-A: new | Alt-E: rename | Alt-D: delete' \
+          --header 'Enter: switch session | Alt-A: new | Alt-E: rename | Alt-D: delete' \
           --expect=alt-a,alt-e,alt-d) || exit 0
 
 key=$(printf '%s' "$out" | sed -n 1p)
 line=$(printf '%s' "$out" | sed -n 2p)
 target=${line%%$'\t'*}
 
+# Dispatch: do_new's success path tears the popup down via switch-client
+# so we only restart on its failure. Rename and delete always restart so
+# the user can chain another action against the refreshed list.
 case $key in
-    alt-a) do_new ;;
-    alt-e) if [[ -n $target ]]; then do_rename "$target"; else restart; fi ;;
-    alt-d) if [[ -n $target ]]; then do_delete "$target"; else restart; fi ;;
-    '')    if [[ -n $target ]]; then tmux switch-client -t "$target"; fi ;;
+    alt-a) do_new || restart ;;
+    alt-e) [[ -n $target ]] && do_rename "$target" || true; restart ;;
+    alt-d) [[ -n $target ]] && do_delete "$target" || true; restart ;;
+    '')    [[ -n $target ]] && tmux switch-client -t "$target" ;;
 esac
