@@ -9,23 +9,23 @@
 
 set -euo pipefail
 
-source "$(dirname "${BASH_SOURCE[0]}")/fzf-common"
-
-current_window=$(tmux display-message -p '#I')
+source "${BASH_SOURCE[0]%/*}/fzf-common"
 
 # Parallel arrays beat encoding tab-joined strings into a single array and
 # re-splitting them per row. Two passes: collect + measure widths, then emit.
+# One tmux fork instead of two: list-windows emits window_active so we can
+# skip the active window inline rather than asking display-message for #I.
 declare -a idxs=() names=() pane_counts=()
 max_idx=0
 max_name=0
-while IFS=$'\t' read -r idx name panes; do
-    [[ $idx == "$current_window" ]] && continue
+while IFS=$'\t' read -r active idx name panes; do
+    [[ $active == 1 ]] && continue
     idxs+=("$idx")
     names+=("$name")
     pane_counts+=("$panes")
     (( ${#idx}  > max_idx  )) && max_idx=${#idx}
     (( ${#name} > max_name )) && max_name=${#name}
-done < <(tmux list-windows -F $'#I\t#W\t#{window_panes}')
+done < <(tmux list-windows -F $'#{window_active}\t#I\t#W\t#{window_panes}')
 
 if (( ${#idxs[@]} == 0 )); then
     tmux display-message 'no other windows'
@@ -48,7 +48,7 @@ done
 
 selection=$(
     printf '%s' "$rows" \
-        | fzf --no-tmux +m --reverse --exit-0 --no-preview --ansi \
+        | "$FZF_BIN" --no-tmux +m --reverse --exit-0 --no-preview --ansi \
               --delimiter=$'\t' --with-nth=2.. \
               --border rounded --padding 1 \
               "$FZF_COLOR" \

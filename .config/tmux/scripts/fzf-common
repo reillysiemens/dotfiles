@@ -1,8 +1,9 @@
 # Shared helpers for the fzf-* tmux scripts. Source this; do not execute it.
 #
 # After sourcing:
-#   * $PATH includes mise's shim dir so fzf is reachable from non-interactive
-#     shells (such as the one tmux's display-popup spawns).
+#   * FZF_BIN is the absolute path to the fzf binary, resolved once and
+#     cached in the @fzf_bin tmux option. We invoke fzf via $FZF_BIN to
+#     skip mise's shim, which adds ~70ms per call.
 #   * Associative array C holds the Gruvbox palette from theme.conf, read via
 #     the @bg0_h, @red, ... user options.
 #   * Associative array C_RGB holds the same colors as pre-converted "R;G;B"
@@ -15,8 +16,28 @@
 # Optimized for speed: the popup runs on every prefix-w / prefix-Space and the
 # user feels every fork. Everything below avoids subshells in hot paths.
 
-if [[ -d $HOME/.local/share/mise/shims ]]; then
-    export PATH="$HOME/.local/share/mise/shims:$PATH"
+# Resolve fzf once and cache the absolute path in a tmux global option. The
+# mise shim is a ~70ms tax on every call; reading a tmux option is ~free.
+# If the cached path ever goes stale (e.g. after a mise upgrade) the -x test
+# triggers re-resolution on the next popup, so the cache self-heals.
+FZF_BIN=$(tmux show-option -gqv @fzf_bin)
+if [[ -z $FZF_BIN || ! -x $FZF_BIN ]]; then
+    # Try, in order:
+    #   1. mise on PATH (rare in popup contexts, free if it happens)
+    #   2. mise via the shim symlink (the shim IS mise, so this always works
+    #      as long as any shim has been generated)
+    #   3. whatever PATH finds (covers non-mise installs)
+    FZF_BIN=""
+    if command -v mise &>/dev/null; then
+        FZF_BIN=$(mise which fzf 2>/dev/null)
+    fi
+    if [[ -z $FZF_BIN && -L $HOME/.local/share/mise/shims/fzf ]]; then
+        _mise=$(readlink -f "$HOME/.local/share/mise/shims/fzf")
+        FZF_BIN=$("$_mise" which fzf 2>/dev/null)
+        unset _mise
+    fi
+    [[ -n $FZF_BIN ]] || FZF_BIN=$(command -v fzf)
+    [[ -n $FZF_BIN ]] && tmux set-option -gq @fzf_bin "$FZF_BIN"
 fi
 
 declare -gA C C_RGB
