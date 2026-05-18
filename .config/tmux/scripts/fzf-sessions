@@ -1,15 +1,19 @@
 #!/usr/bin/env bash
 #
-# Fuzzy-pick a tmux session (other than the current one) and switch to it.
+# Fuzzy-pick a tmux session and switch to it. Ctrl-T creates a new
+# session, Ctrl-R renames the highlighted session, Ctrl-X deletes it
+# (after a yes/no confirm). All interaction stays inside the popup:
+# the picker uses fzf with --expect to dispatch on key, and the
+# new/rename/delete prompts are themselves fzf invocations (single
+# dummy row + --print-query for free text input, two-row yes/no fzf
+# for the confirm). After any mutation the script re-execs itself
+# to restart the picker with a fresh list. The picker excludes the
+# current session so the delete action can't take out the session
+# hosting the popup.
 #
-# Each row mirrors status-left's identity: a dark-on-session-color cell
-# shows the session name. The palette comes from theme.conf via @red,
-# @orange, ...; each session's color is set by ../scripts/session-color
-# and stashed in the session-scoped @session_color option, which we read
-# inline via #{@session_color} -- one tmux fork, no per-row lookups.
-#
-# Sessions are listed most-recently-active first so the likely target sits
-# right under the cursor.
+# Session colors stay in sync via the session-created and
+# session-renamed hooks in theme.conf -- nothing here touches
+# session-color directly.
 
 set -euo pipefail
 
@@ -17,20 +21,70 @@ source "${BASH_SOURCE[0]%/*}/fzf-common"
 
 # Reverse map: palette hex -> palette key. session-color only ever picks
 # from these seven hashed hues, so this is a closed set. Sessions whose
-# @session_color is the @fg fallback (the brief window before the
-# session-created hook fires) miss the map and render on the fg slot --
-# beige cell, dark text. Still readable, still consistent.
+# @session_color is the @fg fallback miss the map and render on the fg
+# slot -- beige cell, dark text. Still readable, still consistent.
 declare -A SLOT_BY_HEX
 for _k in red orange yellow green blue aqua purple; do
     SLOT_BY_HEX[${C[$_k]}]=$_k
 done
 unset _k
 
-current=$(tmux display-message -p '#S')
+restart() { exec "${BASH_SOURCE[0]}"; }
 
-# One tmux fork; pipe through sort -nr on the activity epoch so the most
-# recently used session bubbles to the top. The epoch column is discarded
-# after sorting.
+# Text input via fzf. Args: prompt, initial query (optional), header
+# (optional). Feeds fzf one empty row so the picker stays alive, hides
+# match info to keep the UI clean, and prints the typed query on Enter.
+# Returns empty if the user cancels with Esc.
+prompt() {
+    local p=$1 q=${2:-} h=${3:-}
+    printf '\n' | "$FZF_BIN" --no-tmux --reverse --no-info \
+        --print-query --prompt="$p" --query="$q" \
+        --border rounded --padding 1 \
+        --header "$h" \
+        --bind 'enter:print-query+accept' \
+        "$FZF_COLOR" 2>/dev/null | head -1
+}
+
+# Yes/no via fzf. Default highlighted row is "no" for safety. Returns
+# 0 only if the user selects yes; cancel (Esc) treated as no.
+confirm() {
+    local p=$1 choice
+    choice=$(printf 'no\nyes\n' | "$FZF_BIN" --no-tmux --reverse --no-info \
+        --prompt="$p " \
+        --border rounded --padding 1 \
+        --header 'Arrow + Enter, or Esc to cancel' \
+        "$FZF_COLOR" 2>/dev/null) || return 1
+    [[ $choice == yes ]]
+}
+
+do_new() {
+    local name
+    name=$(prompt 'New session: ' '' 'Enter to create, Esc to cancel')
+    if [[ -z $name ]]; then restart; fi
+    tmux new-session -d -s "$name"
+    tmux switch-client -t "$name"
+}
+
+do_rename() {
+    local cur=$1 name
+    name=$(prompt 'Rename to: ' "$cur" 'Enter to rename, Esc to cancel')
+    if [[ -z $name || $name == "$cur" ]]; then restart; fi
+    tmux rename-session -t "$cur" "$name"
+    restart
+}
+
+do_delete() {
+    local target=$1
+    if confirm "delete session $target?"; then
+        tmux kill-session -t "$target"
+    fi
+    restart
+}
+
+# Build the picker rows: every session except the current one, ordered
+# most-recently-active first. The name cell uses the session's hashed
+# color from @session_color (set by session-color via hooks).
+current=$(tmux display-message -p '#S')
 declare -a names=() winds=() attached_flags=() colors=()
 max_name=0
 max_winds=0
@@ -47,14 +101,13 @@ done < <(
         | sort -t$'\t' -k1,1 -nr
 )
 
+# If there are no other sessions, jump straight to the new-session
+# flow -- otherwise the picker would just be a blank popup.
 if (( ${#names[@]} == 0 )); then
-    tmux display-message 'no other sessions'
+    do_new
     exit 0
 fi
 
-# All-builtin row build: cell() and printf -v avoid every $(...) fork.
-# The attached marker is a trailing text label; we leave it off entirely
-# for detached sessions rather than padding, since it's the last column.
 rows=""
 for i in "${!names[@]}"; do
     name=${names[$i]}
@@ -70,14 +123,23 @@ for i in "${!names[@]}"; do
     rows+="${name}"$'\t'"${row}"$'\n'
 done
 
-selection=$(
-    printf '%s' "$rows" \
-        | "$FZF_BIN" --no-tmux +m --reverse --exit-0 --no-preview --ansi \
-              --delimiter=$'\t' --with-nth=2.. \
-              --border rounded --padding 1 \
-              "$FZF_COLOR" \
-              --header 'Enter: switch session'
-) || exit 0
+# --expect makes fzf print the pressed key on line 1 then the selected
+# row(s) on the following lines. Enter exits with an empty key.
+out=$(printf '%s' "$rows" \
+    | "$FZF_BIN" --no-tmux +m --reverse --exit-0 --no-preview --ansi \
+          --delimiter=$'\t' --with-nth=2.. \
+          --border rounded --padding 1 \
+          "$FZF_COLOR" \
+          --header 'Enter: switch | Ctrl-T: new | Ctrl-R: rename | Ctrl-X: delete' \
+          --expect=ctrl-t,ctrl-r,ctrl-x) || exit 0
 
-target=${selection%%$'\t'*}
-tmux switch-client -t "$target"
+key=$(printf '%s' "$out" | sed -n 1p)
+line=$(printf '%s' "$out" | sed -n 2p)
+target=${line%%$'\t'*}
+
+case $key in
+    ctrl-t) do_new ;;
+    ctrl-r) if [[ -n $target ]]; then do_rename "$target"; else restart; fi ;;
+    ctrl-x) if [[ -n $target ]]; then do_delete "$target"; else restart; fi ;;
+    '')     if [[ -n $target ]]; then tmux switch-client -t "$target"; fi ;;
+esac
