@@ -55,10 +55,9 @@ for i in "${!widxs[@]}"; do
     printf -v pidx_padded "%-${max_pidx}s" "$pidx"
     printf -v name_padded "%-${max_name}s" "$wname"
     printf -v cmd_padded  "%-${max_cmd}s"  "$cmd"
-    cell index_cell bg0_h "$slot" " $widx_padded "
-    cell name_cell  fg    bg0     " $name_padded "
+    cell wp_cell bg0_h "$slot" " ${widx_padded}.${pidx_padded} "
     display_path="${path/#$HOME/\~}"
-    rows+="${widx}:${pidx}"$'\t'"${index_cell}${name_cell}  ${widx_padded}.${pidx_padded}  ${cmd_padded}  ${display_path}"$'\n'
+    rows+="${widx}:${pidx}"$'\t'"${wp_cell} ${name_padded}  ${cmd_padded}  ${display_path}"$'\n'
 done
 
 selection=$(
