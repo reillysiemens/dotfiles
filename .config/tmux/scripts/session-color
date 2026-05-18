@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+#
+# Hash a session name to a Gruvbox palette color and stash it as the
+# @session_color user option on that session. status-left picks it up via
+# #{@session_color} to tint the session name in the status bar.
+#
+# Invoked by:
+#   * session-created hook (fires when a new session is born)
+#   * session-renamed hook (re-hashes after rename)
+#   * theme.conf at config load (seeds all existing sessions)
+#
+# Usage: session-color [SESSION_NAME]
+# If no name is given, hashes the current session.
+
+set -euo pipefail
+
+session="${1:-$(tmux display-message -p '#S')}"
+
+# Seven distinct hues. Reusing the same palette the windows ride on, so a
+# session and its windows share a visual family. The palette lives in
+# ../config/theme.conf and is exposed as @red, @green, ... user options.
+readonly COLORS=(
+    "$(tmux show-option -gqv @red)"
+    "$(tmux show-option -gqv @orange)"
+    "$(tmux show-option -gqv @yellow)"
+    "$(tmux show-option -gqv @green)"
+    "$(tmux show-option -gqv @blue)"
+    "$(tmux show-option -gqv @aqua)"
+    "$(tmux show-option -gqv @purple)"
+)
+
+hash="$(printf '%s' "$session" | cksum | awk '{print $1}')"
+color="${COLORS[$((hash % ${#COLORS[@]}))]}"
+
+# Session-scoped so each session's option lookup finds its own color and the
+# global @session_color fallback in theme.conf is only used in the gap
+# between session creation and the hook firing.
+tmux set-option -t "$session" -q @session_color "$color"

@@ -9,10 +9,10 @@
 # red as it falls, and its icon shifts from full to empty across the
 # same thresholds.
 #
-# Separators borrow the accent color set by ~/.config/tmux/scripts/
-# accent-color, read from the @accent user option. Tmux re-parses
-# the script's output for #[...] style sequences, so this script
-# emits the fully-styled status string and theme.conf just calls it.
+# Separators borrow the accent color hardcoded in
+# ~/.config/tmux/config/theme.conf, read from the @accent user option.
+# Tmux re-parses the script's output for #[...] style sequences, so this
+# script emits the fully-styled status string and theme.conf just calls it.
 #
 # Invoked from theme.conf as:
 #     set -g status-right "#(~/.config/tmux/scripts/status-right)"
@@ -20,7 +20,7 @@
 set -euo pipefail
 
 # Gruvbox bright accents used for threshold coloring. Keep in sync
-# with theme.conf and scripts/accent-color.
+# with the palette in theme.conf.
 readonly GREEN='#b8bb26'
 readonly YELLOW='#fabd2f'
 readonly ORANGE='#fe8019'
