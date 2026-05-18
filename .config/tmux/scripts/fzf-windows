@@ -2,66 +2,52 @@
 #
 # Fuzzy-pick a window in the current tmux session and switch to it.
 #
-# Each row mirrors the status bar's window-status-format: a dark-on-rainbow
-# cell for the window index and a light-on-dark cell for the window name.
-# The rainbow palette comes from theme.conf via the @red, @orange, ... user
-# options; the per-window slot is (#I mod 7) to match the @wc formula.
+# Each row mirrors window-status-format: a dark-on-rainbow cell for the
+# window index and a light-on-bg0 cell for the window name. The rainbow
+# palette comes from theme.conf via @red, @orange, ...; the per-window
+# slot is (#I mod 7), matching @wc.
 
 set -euo pipefail
 
-# tmux display-popup runs a non-interactive shell that doesn't source the
-# user's rc files, so mise-managed tools (fzf) aren't on PATH by default.
-# Prepend mise's shims directory if present.
-if [[ -d $HOME/.local/share/mise/shims ]]; then
-    export PATH="$HOME/.local/share/mise/shims:$PATH"
-fi
-
-# Palette (single source of truth: theme.conf). Read once at startup so
-# building rows doesn't fork tmux per cell.
-declare -A C
-for name in bg0_h bg0 fg red orange yellow green blue aqua purple; do
-    C[$name]="$(tmux show-option -gqv "@${name}")"
-done
-
-# (#I mod 7) -> palette key. ROYGBIV with violet wrapping to slot 0, matching
-# the conditional chain in theme.conf's @wc.
-WC_BY_MOD=(purple red orange yellow green blue aqua)
-
-hex_to_rgb() {
-    local hex="${1#\#}"
-    printf '%d;%d;%d' "0x${hex:0:2}" "0x${hex:2:2}" "0x${hex:4:2}"
-}
-
-# Wrap text in a 24-bit fg+bg SGR sequence. fzf --ansi strips these for
-# matching, so search still works on the visible text.
-cell() {
-    local fg=$1 bg=$2 text=$3
-    printf '\033[38;2;%s;48;2;%sm%s\033[0m' \
-        "$(hex_to_rgb "$fg")" "$(hex_to_rgb "$bg")" "$text"
-}
+source "$(dirname "${BASH_SOURCE[0]}")/fzf-common"
 
 current_window=$(tmux display-message -p '#I')
 
-# Each row: <window-index>\t<styled-display>. The leading index is a hidden
-# key (via --with-nth) so selection parsing doesn't have to strip ANSI.
-rows=$(
-    tmux list-windows -F $'#I\t#W\t#{window_panes}' \
-        | while IFS=$'\t' read -r idx name panes; do
-            [[ $idx == "$current_window" ]] && continue
-            slot="${WC_BY_MOD[$((idx % 7))]}"
-            wc="${C[$slot]}"
-            index_cell=$(cell "${C[bg0_h]}" "$wc"        " $idx ")
-            name_cell=$(cell  "${C[fg]}"    "${C[bg0]}"  " $name ")
-            printf '%s\t%s%s  %sp\n' "$idx" "$index_cell" "$name_cell" "$panes"
-        done
-)
+# Two-pass so columns align across rows: first collect entries and find
+# max widths, then emit cells padded to those widths.
+declare -a entries=()
+max_idx=0
+max_name=0
+while IFS=$'\t' read -r idx name panes; do
+    [[ $idx == "$current_window" ]] && continue
+    entries+=("$idx"$'\t'"$name"$'\t'"$panes")
+    (( ${#idx}  > max_idx  )) && max_idx=${#idx}
+    (( ${#name} > max_name )) && max_name=${#name}
+done < <(tmux list-windows -F $'#I\t#W\t#{window_panes}')
 
-[[ -z "$rows" ]] && exit 0
+if (( ${#entries[@]} == 0 )); then
+    tmux display-message 'no other windows'
+    exit 0
+fi
+
+rows=""
+for entry in "${entries[@]}"; do
+    IFS=$'\t' read -r idx name panes <<< "$entry"
+    slot="${WC_BY_MOD[$((idx % 7))]}"
+    wc="${C[$slot]}"
+    idx_padded=$(printf  "%${max_idx}d"   "$idx")
+    name_padded=$(printf "%-${max_name}s" "$name")
+    index_cell=$(cell "${C[bg0_h]}" "$wc"       " $idx_padded ")
+    name_cell=$(cell  "${C[fg]}"    "${C[bg0]}" " $name_padded ")
+    rows+="${idx}"$'\t'"${index_cell}${name_cell}  ${panes}p"$'\n'
+done
 
 selection=$(
-    printf '%s\n' "$rows" \
+    printf '%s' "$rows" \
         | fzf --no-tmux +m --reverse --exit-0 --no-preview --ansi \
               --delimiter=$'\t' --with-nth=2.. \
+              --border rounded --padding 1 \
+              "$FZF_COLOR" \
               --header 'Enter: switch window'
 ) || exit 0
 

@@ -1,0 +1,51 @@
+# Shared helpers for the fzf-* tmux scripts. Source this; do not execute it.
+#
+# After sourcing:
+#   * $PATH includes mise's shim dir so fzf is reachable from non-interactive
+#     shells (such as the one tmux's display-popup spawns).
+#   * Associative array C holds the Gruvbox palette from theme.conf, read via
+#     the @bg0_h, @red, ... user options.
+#   * Array WC_BY_MOD maps (#I mod 7) -> palette key, mirroring @wc.
+#   * cell <fg-hex> <bg-hex> <text> wraps text in a truecolor SGR sequence.
+#   * FZF_COLOR is a `--color=...` arg that themes fzf to match the palette.
+
+if [[ -d $HOME/.local/share/mise/shims ]]; then
+    export PATH="$HOME/.local/share/mise/shims:$PATH"
+fi
+
+declare -gA C
+for _palette in bg0_h bg0 bg1 bg2 fg red orange yellow green blue aqua purple; do
+    C[$_palette]="$(tmux show-option -gqv "@${_palette}")"
+done
+unset _palette
+
+# (#I mod 7) -> palette key. ROYGBIV with violet wrapping to slot 0, matching
+# the conditional chain in theme.conf's @wc.
+WC_BY_MOD=(purple red orange yellow green blue aqua)
+
+hex_to_rgb() {
+    local hex="${1#\#}"
+    printf '%d;%d;%d' "0x${hex:0:2}" "0x${hex:2:2}" "0x${hex:4:2}"
+}
+
+# Wrap text in a 24-bit fg+bg SGR sequence. fzf --ansi strips these for
+# matching, so search still works on the visible text.
+cell() {
+    local fg=$1 bg=$2 text=$3
+    printf '\033[38;2;%s;48;2;%sm%s\033[0m' \
+        "$(hex_to_rgb "$fg")" "$(hex_to_rgb "$bg")" "$text"
+}
+
+# Gruvbox-flavored fzf theme keyed off the palette above. Passed by callers
+# as a single argv element so the embedded colons/commas aren't word-split.
+_fzf_colors=(
+    "fg:${C[fg]}"           "bg:${C[bg0]}"
+    "hl:${C[yellow]}"       "fg+:${C[fg]}"
+    "bg+:${C[bg1]}"         "hl+:${C[yellow]}"
+    "info:${C[blue]}"       "prompt:${C[orange]}"
+    "pointer:${C[blue]}"    "marker:${C[aqua]}"
+    "spinner:${C[yellow]}"  "header:${C[aqua]}"
+    "border:${C[bg2]}"      "gutter:${C[bg1]}"
+)
+FZF_COLOR="--color=$(IFS=','; printf '%s' "${_fzf_colors[*]}")"
+unset _fzf_colors
