@@ -18,22 +18,23 @@ set -euo pipefail
 # each hue, giving 7 distinct colors. Requires the terminal to support 24-bit
 # color (declared via "Tc" in terminal-overrides in ~/.tmux.conf).
 #
-# Mirrored in ~/.config/tmux/config/theme.conf as $red, $green, ...
-# Bash cannot read tmux variables, so the two palettes are kept in sync by
-# hand. Update both when changing colors.
+# The palette lives in ~/.config/tmux/config/theme.conf and is exposed as
+# @red, @green, ... user options so this script (and others) can read it
+# without duplicating the values.
 readonly COLORS=(
-    fb4934  # bright red
-    b8bb26  # bright green
-    fabd2f  # bright yellow
-    83a598  # bright blue
-    d3869b  # bright purple
-    8ec07c  # bright aqua
-    fe8019  # bright orange
+    "$(tmux show-option -gqv @red)"
+    "$(tmux show-option -gqv @green)"
+    "$(tmux show-option -gqv @yellow)"
+    "$(tmux show-option -gqv @blue)"
+    "$(tmux show-option -gqv @purple)"
+    "$(tmux show-option -gqv @aqua)"
+    "$(tmux show-option -gqv @orange)"
 )
+readonly bg0="$(tmux show-option -gqv @bg0)"
 
 host="$(hostname -s)"
 hash="$(printf '%s' "$host" | cksum | awk '{print $1}')"
-# accent="#${COLORS[$((hash % ${#COLORS[@]}))]}"
+# accent="${COLORS[$((hash % ${#COLORS[@]}))]}"
 accent="#3c3836"
 # accent="#504945"
 # accent="#a89984"
@@ -42,5 +43,5 @@ accent="#3c3836"
 tmux set-option -gq @accent "$accent"
 
 # Style options need the literal value; format expansion does not apply.
-tmux set-option  -g  pane-active-border-style    "fg=${accent},bg=default"
-tmux set-window-option -g window-status-bell-style "fg=#282828,bg=${accent}"
+tmux set-option        -g pane-active-border-style    "fg=${accent},bg=default"
+tmux set-window-option -g window-status-bell-style    "fg=${bg0},bg=${accent}"

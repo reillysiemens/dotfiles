@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+#
+# Fuzzy-pick a pane in the current tmux session and jump to it.
+#
+# Each row leads with the same dark-on-rainbow window-index cell and
+# light-on-dark window-name cell rendered in the status bar (so the
+# pane's home window is recognizable at a glance), followed by the pane
+# index, current command, and current path. Palette is read from theme.conf
+# via @-prefixed user options; the per-window slot is (#I mod 7) to match
+# the @wc formula.
+
+set -euo pipefail
+
+# tmux display-popup runs a non-interactive shell that doesn't source the
+# user's rc files, so mise-managed tools (fzf) aren't on PATH by default.
+# Prepend mise's shims directory if present.
+if [[ -d $HOME/.local/share/mise/shims ]]; then
+    export PATH="$HOME/.local/share/mise/shims:$PATH"
+fi
+
+declare -A C
+for name in bg0_h bg0 fg red orange yellow green blue aqua purple; do
+    C[$name]="$(tmux show-option -gqv "@${name}")"
+done
+
+WC_BY_MOD=(purple red orange yellow green blue aqua)
+
+hex_to_rgb() {
+    local hex="${1#\#}"
+    printf '%d;%d;%d' "0x${hex:0:2}" "0x${hex:2:2}" "0x${hex:4:2}"
+}
+
+cell() {
+    local fg=$1 bg=$2 text=$3
+    printf '\033[38;2;%s;48;2;%sm%s\033[0m' \
+        "$(hex_to_rgb "$fg")" "$(hex_to_rgb "$bg")" "$text"
+}
+
+current_pane=$(tmux display-message -p '#I:#P')
+
+rows=$(
+    tmux list-panes -s -F $'#I\t#P\t#W\t#{pane_current_command}\t#{pane_current_path}' \
+        | while IFS=$'\t' read -r widx pidx wname cmd path; do
+            key="${widx}:${pidx}"
+            [[ $key == "$current_pane" ]] && continue
+            slot="${WC_BY_MOD[$((widx % 7))]}"
+            wc="${C[$slot]}"
+            index_cell=$(cell "${C[bg0_h]}" "$wc"        " $widx ")
+            name_cell=$(cell  "${C[fg]}"    "${C[bg0]}"  " $wname ")
+            display_path="${path/#$HOME/~}"
+            printf '%s\t%s%s  .%s  %s  %s\n' \
+                "$key" "$index_cell" "$name_cell" \
+                "$pidx" "$cmd" "$display_path"
+        done
+)
+
+[[ -z "$rows" ]] && exit 0
+
+selection=$(
+    printf '%s\n' "$rows" \
+        | fzf --no-tmux +m --reverse --exit-0 --no-preview --ansi \
+              --delimiter=$'\t' --with-nth=2.. \
+              --header 'Enter: jump to pane'
+) || exit 0
+
+target=${selection%%$'\t'*}
+window_idx=${target%:*}
+pane_idx=${target#*:}
+
+tmux select-window -t "$window_idx"
+tmux select-pane   -t "${window_idx}.${pane_idx}"
