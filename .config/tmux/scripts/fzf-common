@@ -5,39 +5,57 @@
 #     shells (such as the one tmux's display-popup spawns).
 #   * Associative array C holds the Gruvbox palette from theme.conf, read via
 #     the @bg0_h, @red, ... user options.
+#   * Associative array C_RGB holds the same colors as pre-converted "R;G;B"
+#     triples so the row-render loop never has to do hex math.
 #   * Array WC_BY_MOD maps (#I mod 7) -> palette key, mirroring @wc.
-#   * cell <fg-hex> <bg-hex> <text> wraps text in a truecolor SGR sequence.
+#   * cell <out-var> <fg-key> <bg-key> <text> wraps text in a truecolor SGR
+#     sequence and assigns it to out-var. fg-key and bg-key index into C_RGB.
 #   * FZF_COLOR is a `--color=...` arg that themes fzf to match the palette.
+#
+# Optimized for speed: the popup runs on every prefix-w / prefix-Space and the
+# user feels every fork. Everything below avoids subshells in hot paths.
 
 if [[ -d $HOME/.local/share/mise/shims ]]; then
     export PATH="$HOME/.local/share/mise/shims:$PATH"
 fi
 
-declare -gA C
-for _palette in bg0_h bg0 bg1 bg2 fg red orange yellow green blue aqua purple; do
-    C[$_palette]="$(tmux show-option -gqv "@${_palette}")"
+declare -gA C C_RGB
+
+# One tmux fork for the whole palette instead of one per key. Options that
+# aren't ours fall through the case and are ignored.
+while IFS=' ' read -r _key _value; do
+    case $_key in
+        @bg0_h|@bg0|@bg1|@bg2|@fg|@red|@orange|@yellow|@green|@blue|@aqua|@purple)
+            _value=${_value#\"}
+            _value=${_value%\"}
+            C[${_key#@}]=$_value
+            ;;
+    esac
+done < <(tmux show-options -g)
+unset _key _value
+
+# Pre-convert every palette hex into an "R;G;B" triple. The render loop just
+# slots these straight into the SGR template -- no per-row hex math, no forks.
+for _k in "${!C[@]}"; do
+    _h=${C[$_k]#\#}
+    printf -v "C_RGB[$_k]" '%d;%d;%d' \
+        "0x${_h:0:2}" "0x${_h:2:2}" "0x${_h:4:2}"
 done
-unset _palette
+unset _k _h
 
 # (#I mod 7) -> palette key. ROYGBIV with violet wrapping to slot 0, matching
 # the conditional chain in theme.conf's @wc.
 WC_BY_MOD=(purple red orange yellow green blue aqua)
 
-hex_to_rgb() {
-    local hex="${1#\#}"
-    printf '%d;%d;%d' "0x${hex:0:2}" "0x${hex:2:2}" "0x${hex:4:2}"
-}
-
-# Wrap text in a 24-bit fg+bg SGR sequence. fzf --ansi strips these for
-# matching, so search still works on the visible text.
+# Caller-supplied out-var avoids the $(...) fork that the old API forced.
 cell() {
-    local fg=$1 bg=$2 text=$3
-    printf '\033[38;2;%s;48;2;%sm%s\033[0m' \
-        "$(hex_to_rgb "$fg")" "$(hex_to_rgb "$bg")" "$text"
+    printf -v "$1" '\033[38;2;%s;48;2;%sm%s\033[0m' \
+        "${C_RGB[$2]}" "${C_RGB[$3]}" "$4"
 }
 
-# Gruvbox-flavored fzf theme keyed off the palette above. Passed by callers
-# as a single argv element so the embedded colons/commas aren't word-split.
+# Gruvbox-flavored fzf theme keyed off the palette above. Built once at source
+# time and passed by callers as a single argv element so the embedded colons
+# and commas aren't word-split. The $(...) is fine -- runs once, not per row.
 _fzf_colors=(
     "fg:${C[fg]}"           "bg:${C[bg0]}"
     "hl:${C[yellow]}"       "fg+:${C[fg]}"
