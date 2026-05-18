@@ -15,17 +15,25 @@ source "${BASH_SOURCE[0]%/*}/fzf-common"
 # re-splitting them per row. Two passes: collect + measure widths, then emit.
 # One tmux fork instead of two: list-windows emits window_active so we can
 # skip the active window inline rather than asking display-message for #I.
-declare -a idxs=() names=() pane_counts=()
+# pane_current_command/path in list-windows context refer to the row's
+# active pane -- useful at-a-glance hints for "what's going on in this window".
+declare -a idxs=() names=() pane_counts=() cmds=() paths=()
 max_idx=0
 max_name=0
-while IFS=$'\t' read -r active idx name panes; do
+max_panes=0
+max_cmd=0
+while IFS=$'\t' read -r active idx name panes cmd path; do
     [[ $active == 1 ]] && continue
     idxs+=("$idx")
     names+=("$name")
     pane_counts+=("$panes")
-    (( ${#idx}  > max_idx  )) && max_idx=${#idx}
-    (( ${#name} > max_name )) && max_name=${#name}
-done < <(tmux list-windows -F $'#{window_active}\t#I\t#W\t#{window_panes}')
+    cmds+=("$cmd")
+    paths+=("$path")
+    (( ${#idx}   > max_idx   )) && max_idx=${#idx}
+    (( ${#name}  > max_name  )) && max_name=${#name}
+    (( ${#panes} > max_panes )) && max_panes=${#panes}
+    (( ${#cmd}   > max_cmd   )) && max_cmd=${#cmd}
+done < <(tmux list-windows -F $'#{window_active}\t#I\t#W\t#{window_panes}\t#{pane_current_command}\t#{pane_current_path}')
 
 if (( ${#idxs[@]} == 0 )); then
     tmux display-message 'no other windows'
@@ -33,17 +41,25 @@ if (( ${#idxs[@]} == 0 )); then
 fi
 
 # All-builtin row build: printf -v and cell() avoid every $(...) fork.
+# `\~` in the replacement is required: bash 5+ does tilde expansion on the
+# replacement string, so a bare `~` would resolve to $HOME and no-op the
+# substitution. The backslash forces a literal tilde.
 rows=""
 for i in "${!idxs[@]}"; do
     idx=${idxs[$i]}
     name=${names[$i]}
     panes=${pane_counts[$i]}
+    cmd=${cmds[$i]}
+    path=${paths[$i]}
     slot=${WC_BY_MOD[$((idx % 7))]}
-    printf -v idx_padded  "%${max_idx}d"   "$idx"
-    printf -v name_padded "%-${max_name}s" "$name"
+    printf -v idx_padded   "%${max_idx}d"   "$idx"
+    printf -v name_padded  "%-${max_name}s" "$name"
+    printf -v panes_padded "%${max_panes}d" "$panes"
+    printf -v cmd_padded   "%-${max_cmd}s"  "$cmd"
     cell index_cell bg0_h "$slot" " $idx_padded "
     cell name_cell  fg    bg0     " $name_padded "
-    rows+="${idx}"$'\t'"${index_cell}${name_cell}  ${panes}p"$'\n'
+    display_path="${path/#$HOME/\~}"
+    rows+="${idx}"$'\t'"${index_cell}${name_cell}  ${panes_padded}p  ${cmd_padded}  ${display_path}"$'\n'
 done
 
 selection=$(

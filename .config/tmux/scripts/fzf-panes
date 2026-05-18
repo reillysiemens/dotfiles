@@ -39,6 +39,10 @@ if (( ${#widxs[@]} == 0 )); then
 fi
 
 # All-builtin row build: printf -v and cell() avoid every $(...) fork.
+# The W.P column uses right-justified W + left-justified P so the dots line
+# up: " 1.1 ", " 1.16", "12.1 ", "12.16" all have the same total width.
+# `\~` in the path substitution is required: bash 5+ does tilde expansion on
+# the replacement string, so a bare `~` would resolve to $HOME and no-op it.
 rows=""
 for i in "${!widxs[@]}"; do
     widx=${widxs[$i]}
@@ -48,13 +52,13 @@ for i in "${!widxs[@]}"; do
     path=${paths[$i]}
     slot=${WC_BY_MOD[$((widx % 7))]}
     printf -v widx_padded "%${max_widx}d"  "$widx"
-    printf -v pidx_padded "%${max_pidx}d"  "$pidx"
+    printf -v pidx_padded "%-${max_pidx}s" "$pidx"
     printf -v name_padded "%-${max_name}s" "$wname"
     printf -v cmd_padded  "%-${max_cmd}s"  "$cmd"
     cell index_cell bg0_h "$slot" " $widx_padded "
     cell name_cell  fg    bg0     " $name_padded "
-    display_path="${path/#$HOME/~}"
-    rows+="${widx}:${pidx}"$'\t'"${index_cell}${name_cell}  .${pidx_padded}  ${cmd_padded}  ${display_path}"$'\n'
+    display_path="${path/#$HOME/\~}"
+    rows+="${widx}:${pidx}"$'\t'"${index_cell}${name_cell}  ${widx_padded}.${pidx_padded}  ${cmd_padded}  ${display_path}"$'\n'
 done
 
 selection=$(
