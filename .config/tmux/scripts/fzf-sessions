@@ -1,0 +1,83 @@
+#!/usr/bin/env bash
+#
+# Fuzzy-pick a tmux session (other than the current one) and switch to it.
+#
+# Each row mirrors status-left's identity: a dark-on-session-color cell
+# shows the session name. The palette comes from theme.conf via @red,
+# @orange, ...; each session's color is set by ../scripts/session-color
+# and stashed in the session-scoped @session_color option, which we read
+# inline via #{@session_color} -- one tmux fork, no per-row lookups.
+#
+# Sessions are listed most-recently-active first so the likely target sits
+# right under the cursor.
+
+set -euo pipefail
+
+source "${BASH_SOURCE[0]%/*}/fzf-common"
+
+# Reverse map: palette hex -> palette key. session-color only ever picks
+# from these seven hashed hues, so this is a closed set. Sessions whose
+# @session_color is the @fg fallback (the brief window before the
+# session-created hook fires) miss the map and render on the fg slot --
+# beige cell, dark text. Still readable, still consistent.
+declare -A SLOT_BY_HEX
+for _k in red orange yellow green blue aqua purple; do
+    SLOT_BY_HEX[${C[$_k]}]=$_k
+done
+unset _k
+
+current=$(tmux display-message -p '#S')
+
+# One tmux fork; pipe through sort -nr on the activity epoch so the most
+# recently used session bubbles to the top. The epoch column is discarded
+# after sorting.
+declare -a names=() winds=() attached_flags=() colors=()
+max_name=0
+max_winds=0
+while IFS=$'\t' read -r _activity name win_count attached col; do
+    [[ $name == "$current" ]] && continue
+    names+=("$name")
+    winds+=("$win_count")
+    attached_flags+=("$attached")
+    colors+=("$col")
+    (( ${#name}      > max_name  )) && max_name=${#name}
+    (( ${#win_count} > max_winds )) && max_winds=${#win_count}
+done < <(
+    tmux list-sessions -F $'#{session_activity}\t#{session_name}\t#{session_windows}\t#{session_attached}\t#{@session_color}' \
+        | sort -t$'\t' -k1,1 -nr
+)
+
+if (( ${#names[@]} == 0 )); then
+    tmux display-message 'no other sessions'
+    exit 0
+fi
+
+# All-builtin row build: cell() and printf -v avoid every $(...) fork.
+# The attached marker is a trailing text label; we leave it off entirely
+# for detached sessions rather than padding, since it's the last column.
+rows=""
+for i in "${!names[@]}"; do
+    name=${names[$i]}
+    win_count=${winds[$i]}
+    attached=${attached_flags[$i]}
+    col=${colors[$i]}
+    slot=${SLOT_BY_HEX[$col]:-fg}
+    printf -v name_padded  "%-${max_name}s"  "$name"
+    printf -v winds_padded "%${max_winds}d"  "$win_count"
+    cell name_cell bg0_h "$slot" " $name_padded "
+    row="${name_cell}  ${winds_padded}w"
+    (( attached > 0 )) && row+="  attached"
+    rows+="${name}"$'\t'"${row}"$'\n'
+done
+
+selection=$(
+    printf '%s' "$rows" \
+        | "$FZF_BIN" --no-tmux +m --reverse --exit-0 --no-preview --ansi \
+              --delimiter=$'\t' --with-nth=2.. \
+              --border rounded --padding 1 \
+              "$FZF_COLOR" \
+              --header 'Enter: switch session'
+) || exit 0
+
+target=${selection%%$'\t'*}
+tmux switch-client -t "$target"
