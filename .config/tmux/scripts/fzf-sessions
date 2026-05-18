@@ -130,16 +130,16 @@ out=$(printf '%s' "$rows" \
           --delimiter=$'\t' --with-nth=2.. \
           --border rounded --padding 1 \
           "$FZF_COLOR" \
-          --header 'Enter: switch | Ctrl-T: new | Ctrl-R: rename | Ctrl-X: delete' \
-          --expect=ctrl-t,ctrl-r,ctrl-x) || exit 0
+          --header 'Enter: switch | Alt-A: new | Alt-E: rename | Alt-D: delete' \
+          --expect=alt-a,alt-e,alt-d) || exit 0
 
 key=$(printf '%s' "$out" | sed -n 1p)
 line=$(printf '%s' "$out" | sed -n 2p)
 target=${line%%$'\t'*}
 
 case $key in
-    ctrl-t) do_new ;;
-    ctrl-r) if [[ -n $target ]]; then do_rename "$target"; else restart; fi ;;
-    ctrl-x) if [[ -n $target ]]; then do_delete "$target"; else restart; fi ;;
-    '')     if [[ -n $target ]]; then tmux switch-client -t "$target"; fi ;;
+    alt-a) do_new ;;
+    alt-e) if [[ -n $target ]]; then do_rename "$target"; else restart; fi ;;
+    alt-d) if [[ -n $target ]]; then do_delete "$target"; else restart; fi ;;
+    '')    if [[ -n $target ]]; then tmux switch-client -t "$target"; fi ;;
 esac
