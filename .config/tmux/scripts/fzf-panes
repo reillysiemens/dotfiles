@@ -13,15 +13,15 @@ source "${BASH_SOURCE[0]%/*}/fzf-common"
 
 # Parallel arrays beat encoding tab-joined strings into a single array and
 # re-splitting them per row. Two passes: collect + measure widths, then emit.
-# One tmux fork instead of two: list-panes emits pane_active so we can skip
-# the active pane inline rather than asking display-message for #I:#P.
+# A pane is THE current pane iff it's active within an active window; one tmux
+# call (with both flags) replaces the separate display-message lookup.
 declare -a widxs=() pidxs=() wnames=() cmds=() paths=()
 max_widx=0
 max_pidx=0
 max_name=0
 max_cmd=0
-while IFS=$'\t' read -r active widx pidx wname cmd path; do
-    [[ $active == 1 ]] && continue
+while IFS=$'\t' read -r wactive pactive widx pidx wname cmd path; do
+    [[ $wactive == 1 && $pactive == 1 ]] && continue
     widxs+=("$widx")
     pidxs+=("$pidx")
     wnames+=("$wname")
@@ -31,7 +31,7 @@ while IFS=$'\t' read -r active widx pidx wname cmd path; do
     (( ${#pidx}  > max_pidx )) && max_pidx=${#pidx}
     (( ${#wname} > max_name )) && max_name=${#wname}
     (( ${#cmd}   > max_cmd  )) && max_cmd=${#cmd}
-done < <(tmux list-panes -s -F $'#{pane_active}\t#I\t#P\t#W\t#{pane_current_command}\t#{pane_current_path}')
+done < <(tmux list-panes -s -F $'#{window_active}\t#{pane_active}\t#I\t#P\t#W\t#{pane_current_command}\t#{pane_current_path}')
 
 if (( ${#widxs[@]} == 0 )); then
     tmux display-message 'no other panes'
