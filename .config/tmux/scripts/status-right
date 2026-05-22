@@ -7,7 +7,9 @@
 # Each metric's percentage is colored on a green -> yellow -> orange ->
 # red gradient. Load and memory go red as they climb; battery goes
 # red as it falls, and its icon shifts from full to empty across the
-# same thresholds.
+# same thresholds. When no battery is present (desktop, WSL without
+# battery passthrough), the battery slot shows a green plug glyph
+# instead -- "on mains, nothing to watch".
 #
 # Separators borrow the accent color hardcoded in
 # ~/.config/tmux/config/theme.conf, read from the @accent user option.
@@ -37,6 +39,7 @@ readonly BATTERY_FULL_ICON='󱊣'        # nf-md-battery_high
 readonly BATTERY_TWO_THIRDS_ICON='󱊢'  # nf-md-battery_medium
 readonly BATTERY_ONE_THIRD_ICON='󱊡'   # nf-md-battery_low
 readonly BATTERY_EMPTY_ICON='󰂎'       # nf-md-battery_outline
+readonly POWER_PLUG_ICON='󰚥'          # nf-md-power_plug
 
 # Thresholds for metrics that worsen as they climb (load, memory).
 # pct in [0,t1) green, [t1,t2) yellow, [t2,t3) orange, [t3,inf) red.
@@ -58,11 +61,19 @@ memory_percentage() {
     awk '/^MemTotal:/{t=$2} /^MemAvailable:/{a=$2} END {printf "%.0f", (t-a)/t*100}' /proc/meminfo
 }
 
-# Empty when no battery is present or upower is unreachable; tolerated
-# silently so a transient DBus hiccup doesn't blank the rest of the
-# status line.
+# Read the first battery's capacity from sysfs -- the canonical kernel
+# interface (upower itself wraps this) so we get the same number with
+# no daemon dependency and no fork. Empty when no battery exists, e.g.
+# on a desktop or in WSL without battery passthrough; the renderer
+# treats that as "on mains" and substitutes a plug glyph.
 battery_percentage() {
-    upower -b 2>/dev/null | awk '/percentage/ {gsub(/%/, "", $2); print $2; exit}' || true
+    local f pct
+    for f in /sys/class/power_supply/BAT*/capacity; do
+        [[ -r "$f" ]] || continue
+        read -r pct < "$f"
+        printf '%s' "$pct"
+        return
+    done
 }
 
 accent="$(tmux show-option -gqv @accent 2>/dev/null || true)"
@@ -75,9 +86,17 @@ battery="$(battery_percentage)"
 load_color="$(worse_above "$load" 50 75 100)"
 memory_color="$(worse_above "$memory" 60 75 90)"
 
+sep="#[fg=${accent},bold]|"
+fg="#[fg=${FG},nobold]"
+
+load_seg="${fg} ${LOAD_ICON} #[fg=${load_color}]${load}%${fg} "
+memory_seg="${fg} ${MEMORY_ICON} #[fg=${memory_color}]${memory}%${fg} "
+
 # Battery is the one metric where the icon also tracks the threshold
 # bucket, so color and glyph are picked together from a single cascade
-# to keep the thresholds in one place.
+# to keep the thresholds in one place. When no battery is present we
+# drop the percentage entirely and show a plug glyph in green -- the
+# "good" end of the gradient -- to signal mains power.
 if [[ -n "$battery" ]]; then
     if   (( battery < 15 )); then
         battery_color="$RED";    battery_icon="$BATTERY_EMPTY_ICON"
@@ -88,18 +107,9 @@ if [[ -n "$battery" ]]; then
     else
         battery_color="$GREEN";  battery_icon="$BATTERY_FULL_ICON"
     fi
-    battery_text="${battery}%"
+    battery_seg="${fg} ${battery_icon} #[fg=${battery_color}]${battery}%${fg} "
 else
-    battery_color="$FG"
-    battery_icon="$BATTERY_EMPTY_ICON"
-    battery_text=""
+    battery_seg="${fg} #[fg=${GREEN}]${POWER_PLUG_ICON}${fg} "
 fi
-
-sep="#[fg=${accent},bold]|"
-fg="#[fg=${FG},nobold]"
-
-load_seg="${fg} ${LOAD_ICON} #[fg=${load_color}]${load}%${fg} "
-memory_seg="${fg} ${MEMORY_ICON} #[fg=${memory_color}]${memory}%${fg} "
-battery_seg="${fg} ${battery_icon} #[fg=${battery_color}]${battery_text}${fg} "
 
 printf '%s\n' "#[fg=${accent},bold][${load_seg}${sep}${memory_seg}${sep}${battery_seg}#[fg=${accent},bold]]#[fg=${FG}]"
