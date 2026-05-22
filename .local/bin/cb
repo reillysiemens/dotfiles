@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+#
+# Push stdin to the system clipboard, picking the right backend for the
+# current environment. Detection order is by reachability + speed:
+#
+#   1. WSL              -> clip.exe          (always present, no display server,
+#                                             faster than going through WSLg's
+#                                             X bridge)
+#   2. Wayland          -> wl-copy           (requires wl-clipboard package)
+#   3. X11 (incl. WSLg) -> xclip -selection clipboard
+#
+# Used by:
+#   * .config/tmux/config/keybindings.conf  (copy-mode-vi y)
+#   * .config/tmux/config/options.conf      (`--check` probe at load time
+#                                            to decide whether tmux should
+#                                            emit OSC 52 as a fallback)
+#
+# Usage:
+#   cb             read stdin, push to clipboard
+#   cb --check     probe-only: print detected backend name + exit 0,
+#                        or exit 1 if no backend is reachable. Does not
+#                        touch the clipboard.
+#
+# Caveats:
+#   * clip.exe silently strips trailing newlines and converts the
+#     round-tripped content to CRLF. For yank-and-paste flows this is
+#     what you usually want.
+#   * Detection is by environment variable + binary presence + (for X)
+#     a $DISPLAY check, not a full feature probe. In the rare case both
+#     WSL and an X server are reachable, WSL wins by design (faster path,
+#     matches the Windows-native clipboard the user almost certainly
+#     means by "the clipboard").
+
+set -euo pipefail
+
+# Single source of truth for backend selection. Prints the backend name
+# on stdout and returns 0 on success, returns 1 silently otherwise.
+detect_backend() {
+    if [[ -n "${WSL_DISTRO_NAME:-}" ]] && command -v clip.exe >/dev/null 2>&1; then
+        printf 'wsl\n'
+    elif [[ -n "${WAYLAND_DISPLAY:-}" ]] && command -v wl-copy >/dev/null 2>&1; then
+        printf 'wayland\n'
+    elif [[ -n "${DISPLAY:-}" ]] && command -v xclip >/dev/null 2>&1; then
+        printf 'x11\n'
+    else
+        return 1
+    fi
+}
+
+if [[ "${1:-}" == "--check" ]]; then
+    detect_backend || exit 1
+    exit 0
+fi
+
+case "$(detect_backend || true)" in
+    wsl)     exec clip.exe ;;
+    wayland) exec wl-copy ;;
+    x11)     exec xclip -selection clipboard -in ;;
+    *)
+        printf 'cb: no clipboard backend reachable (tried clip.exe, wl-copy, xclip)\n' >&2
+        exit 1
+        ;;
+esac
