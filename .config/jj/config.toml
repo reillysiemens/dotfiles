@@ -1,0 +1,10 @@
+#:schema https://jj-vcs.github.io/jj/latest/config-schema.json
+
+[user]
+name = "Reilly Tucker Siemens"
+email = "reilly@tuckersiemens.com"
+
+[signing]
+backend = "gpg"
+key = "7CB154A9"
+behavior = "own"
