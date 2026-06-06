@@ -91,6 +91,9 @@ export PATH="$VOLTA_HOME/bin:$PATH"
 # keep dotnet in line
 export DOTNET_CLI_TELEMETRY_OPTOUT=1
 
+# use a nice copilot prompt in tmux
+export COPILOT_PROMPT_FRAME=1
+
 # }}}
 # Line Editing {{{
 
